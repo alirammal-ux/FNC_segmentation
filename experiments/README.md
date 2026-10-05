@@ -10,11 +10,13 @@ the validation images.
 
 One training per variant (seed 42, everything else as the adopted recipe), compared on the 43 validation images (network +
 post-processing), difference variant − adopted network. Logs and configurations: `runs/cresunet_light_<variant>/`,
-`runs/cresunet/`; executed with `kaggle/recipe_variants.ipynb` and `kaggle/train.ipynb`.
+`runs/cresunet/`; executed with `kaggle/recipe_variants.ipynb` and `kaggle/train.ipynb`. The c-ResUNet of Morelli et al.
+(2021) is the ResUNet of Zhang et al. (2018) with two additions, a learned colour conversion and the 5 × 5 block, evaluated
+there only together (on the Yellow collection); the adopted network keeps the first and drops the second.
 
 | variant | object F1 | other demonstrable differences | decision |
 |---|---|---|---|
-| reference c-ResUNet (5 × 5 bottleneck block, 1.32 M parameters) | [−0.020, +0.006] | none; training images F1 [−0.006, +0.010] | not adopted (2.6× the parameters for no gain) |
+| c-ResUNet of Morelli et al., 2021 (with the 5 × 5 bottleneck block, 1.32 M parameters) | [−0.020, +0.006] | none; training images F1 [−0.006, +0.010] | not adopted (2.6× the parameters for no gain) |
 | early stopping (patience 15; stopped at epoch 52) | [−0.034, −0.001] | precision worse | not adopted |
 | no gamma augmentation | [−0.013, +0.009] | none | not adopted |
 | per-image normalization | [−0.037, +0.005] | count error worse [+0.05, +1.26] | not adopted |

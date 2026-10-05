@@ -14,7 +14,10 @@ image → c-ResUNet-light (runs/cresunet_light/best.pt, 0.50 M parameters) → p
 ```
 
 c-ResUNet-light is the c-ResUNet of Morelli et al. (2021) without the residual block with 5 × 5 kernels at the end of the
-encoder: on these images the block brings no measurable gain, for 2.6× the parameters (notebook 02).
+encoder. The c-ResUNet is the ResUNet of Zhang et al. (2018) with two additions, a learned colour conversion (1 × 1
+convolution) and that block, which enlarges the field of view; the two were evaluated only together, on another collection
+(Yellow). c-ResUNet-light keeps the first addition and drops the second: on Green the block brings no measurable gain, for
+2.6× the parameters (notebook 02).
 
 ## Results on the test set
 
@@ -24,7 +27,7 @@ bootstrap interval over the images (notebook 04).
 | method | object F1 | precision | recall | pixel Dice | count error (MAE) |
 |---|---|---|---|---|---|
 | **adopted pipeline** | **0.834** [0.810, 0.858] | 0.807 | 0.864 | 0.758 | 3.9 |
-| c-ResUNet (reference) + watershed + classifier | 0.821 | 0.783 | 0.864 | 0.752 | 4.1 |
+| c-ResUNet (Morelli et al., 2021) + watershed + classifier | 0.821 | 0.783 | 0.864 | 0.752 | 4.1 |
 | Cellpose-SAM fine-tuned on the same images | 0.834 | 0.854 | 0.815 | 0.757 | 3.7 |
 | Cellpose-SAM zero-shot | 0.574 | 0.412 | 0.944 | 0.579 | 21.6 |
 | robust threshold (median + 6.5 MAD) | 0.506 | 0.441 | 0.595 | 0.579 | 9.8 |
@@ -52,7 +55,7 @@ evaluation/       prediction, post-processing, object features and classifier, m
 experiments/      the experiments that were tried and not adopted: index, results, code (test-time augmentation)
 splits/           train/val split and the 5 cross-validation folds
 runs/             saved results read by the notebooks: cresunet_light/ (adopted network and classifiers), cresunet/
-                  (reference network), cresunet_light_cv*/ and cv_compare/ (cross-validation), cresunet_light_<variant>/
+                  (c-ResUNet, Morelli et al.), cresunet_light_cv*/ and cv_compare/ (cross-validation), cresunet_light_<variant>/
                   (training variants), test_reference.json (expected test numbers, checked by notebook 04)
 other_methods/    the methods we compare with (threshold baselines, Cellpose) and how they were obtained
 kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them
