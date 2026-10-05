@@ -1,0 +1,30 @@
+{
+  "min_distance": 20,
+  "min_area": 300,
+  "model": "logistic",
+  "threshold_classifier": 0.34,
+  "oof_f1": 0.8407194511403672,
+  "race": [
+    {
+      "model": "logistic",
+      "threshold": 0.34,
+      "obj_f1": 0.8407194511403672
+    },
+    {
+      "model": "boosting",
+      "threshold": 0.09,
+      "obj_f1": 0.8368768328445748
+    }
+  ],
+  "train_objects": 2793,
+  "val": {
+    "dice": 0.7614841461500179,
+    "iou": 0.6148360101995547,
+    "obj_f1": 0.8151093439363817,
+    "obj_precision": 0.7904884318766067,
+    "obj_recall": 0.841313269493844,
+    "n_merged": 9,
+    "count_mae": 4.395348837209302,
+    "count_bias": 1.0930232558139534
+  }
+}

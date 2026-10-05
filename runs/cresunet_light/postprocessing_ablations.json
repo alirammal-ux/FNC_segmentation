@@ -1,0 +1,297 @@
+{
+  "run": "runs/green_v8",
+  "n_true_train": 2690,
+  "p_star": {
+    "model": "logistic",
+    "threshold": 0.36,
+    "oof_f1": 0.8343173431734318,
+    "merged_train": 23,
+    "split_cells_train": 0,
+    "val": {
+      "dice": 0.7608552046439807,
+      "iou": 0.6140163825046604,
+      "obj_f1": 0.8105610561056106,
+      "obj_precision": 0.7831632653061225,
+      "obj_recall": 0.8399452804377565,
+      "n_merged": 9,
+      "count_mae": 4.395348837209302,
+      "count_bias": 1.2325581395348837
+    }
+  },
+  "grid": [
+    {
+      "min_area": 160,
+      "min_distance": 20,
+      "objects": 2881,
+      "merged": 23,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.35,
+      "oof_f1": 0.8367196158108607,
+      "gain": 0.0024022726374289816
+    },
+    {
+      "min_area": 200,
+      "min_distance": 20,
+      "objects": 2855,
+      "merged": 23,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.29,
+      "oof_f1": 0.837578442229605,
+      "gain": 0.0032610990561732223
+    },
+    {
+      "min_area": 250,
+      "min_distance": 20,
+      "objects": 2821,
+      "merged": 23,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.17,
+      "oof_f1": 0.838662256523337,
+      "gain": 0.004344913349905277
+    },
+    {
+      "min_area": 300,
+      "min_distance": 20,
+      "objects": 2793,
+      "merged": 23,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.34,
+      "oof_f1": 0.8407194511403672,
+      "gain": 0.006402107966935411,
+      "val_ci": {
+        "dice": [
+          -0.0009190151719427969,
+          0.002211113936186773
+        ],
+        "obj_f1": [
+          0.0012859886020674255,
+          0.00849401108487965
+        ],
+        "obj_precision": [
+          0.0016881645580477307,
+          0.014648321329466226
+        ],
+        "obj_recall": [
+          0.0,
+          0.004225352112676051
+        ],
+        "count_mae": [
+          -0.16279069767441845,
+          0.16279069767441845
+        ]
+      },
+      "passes": true
+    },
+    {
+      "min_area": 350,
+      "min_distance": 20,
+      "objects": 2753,
+      "merged": 23,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.15,
+      "oof_f1": 0.8406065088757396,
+      "gain": 0.006289165702307864,
+      "val_ci": {
+        "dice": [
+          -0.002533330407173154,
+          0.008877549599876626
+        ],
+        "obj_f1": [
+          -0.004589520232224356,
+          0.013494828705974252
+        ],
+        "obj_precision": [
+          -0.005553093550065111,
+          0.016450180006940186
+        ],
+        "obj_recall": [
+          -0.006849785488484144,
+          0.012500391113892319
+        ],
+        "count_mae": [
+          -0.13953488372093048,
+          0.3023255813953494
+        ]
+      },
+      "passes": false
+    },
+    {
+      "min_area": 400,
+      "min_distance": 20,
+      "objects": 2704,
+      "merged": 23,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.16,
+      "oof_f1": 0.8400074501769417,
+      "gain": 0.005690107003509914,
+      "val_ci": {
+        "dice": [
+          -0.003672952991845707,
+          0.008829278785698412
+        ],
+        "obj_f1": [
+          -0.009344642125674209,
+          0.014030549711879586
+        ],
+        "obj_precision": [
+          -0.001579985793170846,
+          0.021704809350496276
+        ],
+        "obj_recall": [
+          -0.021300560388838805,
+          0.008326606487916846
+        ],
+        "count_mae": [
+          -0.16279069767441845,
+          0.39593023255813703
+        ]
+      },
+      "passes": false
+    },
+    {
+      "min_area": 120,
+      "min_distance": "none",
+      "objects": 2909,
+      "merged": 28,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.31,
+      "oof_f1": 0.83216525267429,
+      "gain": -0.002152090499141779
+    },
+    {
+      "min_area": 120,
+      "min_distance": 12,
+      "objects": 2928,
+      "merged": 15,
+      "split_cells": 3,
+      "model": "logistic",
+      "threshold": 0.22,
+      "oof_f1": 0.8379316645349899,
+      "gain": 0.003614321361558148
+    },
+    {
+      "min_area": 120,
+      "min_distance": 15,
+      "objects": 2920,
+      "merged": 19,
+      "split_cells": 1,
+      "model": "logistic",
+      "threshold": 0.33,
+      "oof_f1": 0.8355408388520972,
+      "gain": 0.0012234956786654205
+    },
+    {
+      "min_area": 120,
+      "min_distance": 25,
+      "objects": 2911,
+      "merged": 27,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.35,
+      "oof_f1": 0.8326876959970485,
+      "gain": -0.0016296471763832532
+    }
+  ],
+  "protocol": {
+    "model": "logistic",
+    "threshold": 0.25,
+    "oof_f1": 0.8342815195448706,
+    "gain": -3.5823628561137966e-05
+  },
+  "stacking": [
+    {
+      "proposer": "robust k=6.5",
+      "candidates": 1220,
+      "true": 55,
+      "ceiling_gain": 0.011710054086842225
+    },
+    {
+      "proposer": "robust k=5.0",
+      "candidates": 2314,
+      "true": 107,
+      "ceiling_gain": 0.022567042569285767,
+      "model": "boosting",
+      "add_threshold": 0.97,
+      "oof_f1": 0.8344395280235988,
+      "gain": 0.00012218485016701752
+    },
+    {
+      "proposer": "robust k=4.0",
+      "candidates": 3953,
+      "true": 158,
+      "ceiling_gain": 0.033018619537217186,
+      "model": "boosting",
+      "add_threshold": 0.99,
+      "oof_f1": 0.8343173431734318,
+      "gain": 0.0
+    },
+    {
+      "proposer": "robust k=3.0",
+      "candidates": 7413,
+      "true": 192,
+      "ceiling_gain": 0.03988080365479352,
+      "model": "boosting",
+      "add_threshold": 0.99,
+      "oof_f1": 0.8343173431734318,
+      "gain": 0.0
+    },
+    {
+      "proposer": "Cellpose zero-shot",
+      "candidates": 3170,
+      "true": 233,
+      "ceiling_gain": 0.048046003722021946,
+      "model": "boosting",
+      "add_threshold": 0.97,
+      "oof_f1": 0.8345323741007195,
+      "gain": 0.00021503092728769602
+    }
+  ],
+  "closing_pairs_train": {
+    "same cell": 1,
+    "different cells": 18,
+    "with an unannotated object": 4
+  },
+  "passed": [
+    {
+      "min_area": 300,
+      "min_distance": 20,
+      "objects": 2793,
+      "merged": 23,
+      "split_cells": 0,
+      "model": "logistic",
+      "threshold": 0.34,
+      "oof_f1": 0.8407194511403672,
+      "gain": 0.006402107966935411,
+      "val_ci": {
+        "dice": [
+          -0.0009190151719427969,
+          0.002211113936186773
+        ],
+        "obj_f1": [
+          0.0012859886020674255,
+          0.00849401108487965
+        ],
+        "obj_precision": [
+          0.0016881645580477307,
+          0.014648321329466226
+        ],
+        "obj_recall": [
+          0.0,
+          0.004225352112676051
+        ],
+        "count_mae": [
+          -0.16279069767441845,
+          0.16279069767441845
+        ]
+      },
+      "passes": true
+    }
+  ]
+}

@@ -50,15 +50,15 @@ def label_instances(mask,connectivity=1):
 
 
 def remove_border_objects(mask,connectivity=1):
-    '''Step 9c (tested, not adopted): remove objects touching the image border.
-    Annotation regularity: only 0.4% of train cells touch it (~4.4% expected).'''
+    '''Tested, not adopted: remove objects touching the image border.
+    Annotation habit: only 0.4% of the train cells touch it (~4.4% expected).'''
     labels=measure.label(mask,connectivity=connectivity)
     border=np.unique(np.concatenate([labels[0],labels[-1],labels[:,0],labels[:,-1]]))
     return mask & ~np.isin(labels,border[border>0])
 
 
 def split_touching(mask,min_distance=8,min_area=MIN_AREA,connectivity=1):
-    '''Step 9c (tested, not adopted): distance-transform watershed to split touching cells.
+    '''Distance-transform watershed to split touching cells (adopted pipeline: seeds at least 20 px apart).
     bool mask → label image (1..N). Pieces < min_area are removed.'''
 
     # distance to the edge: one maximum per cell "centre"
@@ -82,13 +82,13 @@ def split_touching(mask,min_distance=8,min_area=MIN_AREA,connectivity=1):
     return relabel_sequential(labels)[0]
 
 
-def predict_labels(prob, threshold, border=False, min_distance=None):
-    '''Post-processing + optional variants → label image.'''
-    mask = postprocess(prob, threshold=threshold)
+def predict_labels(prob, threshold, border=False, min_distance=None, min_area=MIN_AREA):
+    '''Post-processing + optional variants → label image (min_area: smallest object kept, also after the watershed).'''
+    mask = postprocess(prob, threshold=threshold, min_area=min_area)
     if border:
         mask = remove_border_objects(mask)
     # split cells touch: keep the watershed labels
-    return label_instances(mask) if min_distance is None else split_touching(mask, min_distance)
+    return label_instances(mask) if min_distance is None else split_touching(mask, min_distance, min_area)
 
 
 def clean_instances(lab,min_area=MIN_AREA):

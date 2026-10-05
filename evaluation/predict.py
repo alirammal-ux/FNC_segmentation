@@ -18,7 +18,7 @@ from train.dataset import GreenEvalDataset,load_img_and_masks,load_split
 def load_model(ckpt_path,device):
     '''Model with the checkpoint weights, plus the train mean/std, epoch and normalization saved in it.'''
     ckpt=torch.load(ckpt_path,map_location=device)
-    cfg=ckpt.get('config',{}) # v1-v3: no base_ch/norm → defaults
+    cfg=ckpt.get('config',{}) # older checkpoints: no base_ch/norm in the config → defaults
 
     arch=CResUnetSmallRF if cfg.get('small_rf',False) else CResUnetLogits # small_rf: light network (no 5×5 block)
     model=arch(base_ch=cfg.get('base_ch',16)).to(device) # base channels saved in the config (default 16)

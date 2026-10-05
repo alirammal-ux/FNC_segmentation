@@ -1,11 +1,6 @@
-'''Model selection for the object classifier: logistic regression vs gradient boosting,
-cross-validation on TRAIN only. Objects touching the image border are never judged (always kept).
-Second of the three object-classifier files: object_features → select_object_classifier → object_classifier.'''
+'''Model selection for the object classifier: logistic regression vs gradient boosting and the threshold on P(true),
+cross-validation on TRAIN only (folds by image). Objects touching the image border are never judged (always kept).'''
 
-import argparse
-from pathlib import Path
-
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingClassifier
@@ -16,7 +11,6 @@ from sklearn.preprocessing import StandardScaler
 
 from evaluation.metrics import prf
 from evaluation.object_features import FEATURES
-from evaluation.postprocess import label_instances
 
 # the two candidates: linear vs non-linear
 CANDIDATES = {
@@ -24,7 +18,7 @@ CANDIDATES = {
     "boosting": lambda: HistGradientBoostingClassifier(random_state=0),
 }
 
-# an object is dropped if P(TP) < t; t = 0 keeps every object (= v2)
+# an object is dropped if P(TP) < t; t = 0 keeps every object (= no classifier)
 THRESHOLDS = np.round(np.arange(0.0, 0.91, 0.01), 2)
 
 
@@ -50,52 +44,14 @@ def object_prf(table, n_gt, keep):
     return {"obj_f1": f1, "obj_precision": precision, "obj_recall": recall}
 
 
-def cv_figure(curves, summary, path):
-    '''Out-of-fold F1 on train vs threshold, one line per candidate.'''
-    fig, ax = plt.subplots(figsize=(6.4, 4.2))
-    for (name, curve), color in zip(curves.groupby("model", sort=False), ["#2a78d6", "#eb6834"]):
-        ax.plot(curve.threshold, curve.obj_f1, color=color, lw=1.6, label=name)
-        best = summary.set_index("model").loc[name]
-        ax.plot(best.threshold, best.obj_f1, "o", color=color)
-    ax.axhline(curves.obj_f1.iloc[0], color="#9a9994", lw=1, ls="--", label="keep all (v2)")
-    ax.set_xlabel("threshold on P(TP): objects below are dropped")
-    ax.set_ylabel("object F1 (train, out-of-fold)")
-    ax.legend(frameon=False)
-    ax.grid(color="#e6e5e0", lw=0.8)
-    fig.tight_layout()
-    fig.savefig(path, dpi=150)
-    plt.close(fig)
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Object classifier: choose model and threshold with CV on train")
-    parser.add_argument("--run", type=Path, default=Path("runs/green_v2"))
-    parser.add_argument("--n_splits", type=int, default=5)
-    args = parser.parse_args()
-    out = args.run / "object_classifier"
-
-    table = pd.read_csv(out / "objects_train.csv")       # from object_features.py
-    n_gt = sum(int(label_instances(m > 0).max()) for m in np.load(args.run / "pred_train.npz")["masks"])
-
-    # per candidate: F1 at every threshold, best threshold = highest F1 (ties → lowest t)
-    curves, summary = [], []
+def select_classifier(train, n_gt, n_splits=5):
+    '''The race on train: per candidate, best threshold and out-of-fold F1 (ties → lowest threshold);
+    winner = best F1 (ties → first candidate). n_gt = true cells of the training images.'''
+    rows = []
     for name, make_model in CANDIDATES.items():
-        scores = oof_scores(make_model, table, args.n_splits)
-        curve = pd.DataFrame([{"model": name, "threshold": t, **object_prf(table, n_gt, scores >= t)}
-                              for t in THRESHOLDS])
-        best = curve.loc[curve.obj_f1.idxmax()]
-        summary.append({**best.to_dict(), "n_dropped": int((scores < best.threshold).sum())})
-        curves.append(curve)
-    curves, summary = pd.concat(curves, ignore_index=True), pd.DataFrame(summary)
-
-    print(f"train: {len(table)} objects, {n_gt} true cells | keep all (v2): F1 {curves.obj_f1.iloc[0]:.4f}")
-    print(summary.round(4).to_string(index=False))
-    winner = summary.loc[summary.obj_f1.idxmax()]
-    print(f"winner: {winner.model}, threshold {winner.threshold:.2f} (→ constants in object_classifier.py)")
-
-    curves.to_csv(out / "cv_curves.csv", index=False)
-    cv_figure(curves, summary, out / "cv_f1.png")
-
-
-if __name__ == "__main__":
-    main()
+        scores = oof_scores(make_model, train, n_splits)
+        f1 = [object_prf(train, n_gt, scores >= t)["obj_f1"] for t in THRESHOLDS]
+        k = int(np.argmax(f1))
+        rows.append({"model": name, "threshold": float(THRESHOLDS[k]), "obj_f1": f1[k]})
+    summary = pd.DataFrame(rows)
+    return summary, summary.loc[summary.obj_f1.idxmax()]

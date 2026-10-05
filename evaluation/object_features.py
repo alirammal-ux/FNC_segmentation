@@ -1,8 +1,5 @@
-'''Features of every object predicted by the CNN (one row per object), saved as objects_<split>.csv.
-First of the three object-classifier files: object_features → select_object_classifier → object_classifier.'''
-
-import argparse
-from pathlib import Path
+'''Features of every object predicted by the CNN (one row per object): the input of the object classifier.
+Used by watershed_classifier.py (tables of the adopted pipeline) and by the notebooks.'''
 
 import numpy as np
 import pandas as pd
@@ -10,7 +7,7 @@ from scipy import ndimage
 from skimage import measure
 
 from evaluation.metrics import overlap_tables
-from evaluation.postprocess import label_instances,postprocess,predict_labels
+from evaluation.postprocess import MIN_AREA,label_instances,postprocess,predict_labels
 from train.dataset import load_img_and_masks
 
 # one column per object feature (the classifier input)
@@ -88,18 +85,19 @@ def label_objects(pred_lab, prob, img, gt_lab, ring=10):
     return df[FEATURES + ["label", "border"]]
 
 
-def image_objects(prob, img, gt_mask, threshold=0.5, ring=10, min_distance=None):
+def image_objects(prob, img, gt_mask, threshold=0.5, ring=10, min_distance=None, min_area=MIN_AREA):
     '''One row per object predicted by the CNN in ONE image (label_objects on its post-processed prediction).
-    min_distance: watershed between seeds at least this far apart (px), as in the delivered pipeline; None = no watershed.'''
+    min_distance: watershed between seeds at least this far apart (px), as in the adopted pipeline; None = no watershed.
+    min_area: smallest predicted object kept (px).'''
     # predicted objects: same post-processing as the evaluation
     if min_distance is None:
-        pred_lab = label_instances(postprocess(prob, threshold=threshold))
+        pred_lab = label_instances(postprocess(prob, threshold=threshold, min_area=min_area))
     else:
-        pred_lab = predict_labels(prob, threshold, min_distance=min_distance)
+        pred_lab = predict_labels(prob, threshold, min_distance=min_distance, min_area=min_area)
     return label_objects(pred_lab, prob, img, label_instances(gt_mask > 0), ring)
 
 
-def build_table(pred_npz, images_dir, masks_dir, threshold=0.5, min_distance=None):
+def build_table(pred_npz, images_dir, masks_dir, threshold=0.5, min_distance=None, min_area=MIN_AREA):
     '''All predicted objects of one split (CNN probabilities and masks from the npz).
     Extra columns: "image" (image index) and "obj" (label id of the object).'''
     d = np.load(pred_npz)
@@ -108,30 +106,8 @@ def build_table(pred_npz, images_dir, masks_dir, threshold=0.5, min_distance=Non
 
     parts = []
     for i, (p, img, m) in enumerate(zip(d["probs"], images, d["masks"])):
-        t = image_objects(p.astype(np.float32), img, m, threshold, min_distance=min_distance)
+        t = image_objects(p.astype(np.float32), img, m, threshold, min_distance=min_distance, min_area=min_area)
         if len(t):
             # regionprops follows the label order → row k is object k + 1
             parts.append(t.assign(image=i, obj=np.arange(1, len(t) + 1)))
     return pd.concat(parts, ignore_index=True)
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Object features of the CNN predictions → objects_<split>.csv")
-    parser.add_argument("--run", type=Path, default=Path("runs/green_v2"))
-    parser.add_argument("--splits", nargs="+", default=["train", "val"])   # reads pred_<split>.npz
-    parser.add_argument("--images_dir", type=Path, default=Path("data/green/trainval/images"))
-    parser.add_argument("--masks_dir", type=Path, default=Path("data/cleaned_masks/trainval/Green/masks"))
-    parser.add_argument("--threshold", type=float, default=0.5)   # CNN probability threshold
-    args = parser.parse_args()
-    out = args.run / "object_classifier"
-    out.mkdir(exist_ok=True)
-
-    for split in args.splits:
-        table = build_table(args.run / f"pred_{split}.npz", args.images_dir, args.masks_dir, args.threshold)
-        table.to_csv(out / f"objects_{split}.csv", index=False)
-        print(f"{split}: {len(table)} objects | TP {int(table.label.sum())} | FP {int((table.label == 0).sum())} "
-              f"| on the border {int(table.border.sum())}")
-
-
-if __name__ == "__main__":
-    main()
