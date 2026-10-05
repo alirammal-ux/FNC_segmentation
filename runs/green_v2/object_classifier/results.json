@@ -1,0 +1,82 @@
+{
+  "config": {
+    "run": "runs/green_v2",
+    "threshold_cnn": 0.5,
+    "model": "logistic",
+    "threshold_classifier": 0.37,
+    "features": [
+      "area",
+      "mean_prob",
+      "contrast",
+      "rel_contrast",
+      "local_bg",
+      "solidity",
+      "eccentricity",
+      "nn_dist",
+      "n_objects",
+      "intensity"
+    ],
+    "weights": {
+      "rel_contrast": 0.8020825741315116,
+      "mean_prob": 0.7318275261284173,
+      "solidity": 0.6835589275309909,
+      "local_bg": -0.33054666524035686,
+      "n_objects": -0.15431764529548278,
+      "nn_dist": -0.14096030001759602,
+      "eccentricity": 0.13752843672889822,
+      "area": -0.1201681534801153,
+      "intensity": 0.0818913674079025,
+      "contrast": 0.05765754171730575
+    }
+  },
+  "val": {
+    "v2": {
+      "dice": 0.7626285712426615,
+      "iou": 0.6163295462612632,
+      "obj_f1": 0.7821086261980831,
+      "obj_precision": 0.7338129496402878,
+      "obj_recall": 0.8372093023255814,
+      "n_merged": 12,
+      "count_mae": 4.534883720930233,
+      "count_bias": 2.395348837209302
+    },
+    "v2 + classifier": {
+      "dice": 0.7617236340753456,
+      "iou": 0.615148326364564,
+      "obj_f1": 0.8023715415019763,
+      "obj_precision": 0.7738246505717916,
+      "obj_recall": 0.8331053351573188,
+      "n_merged": 12,
+      "count_mae": 4.1395348837209305,
+      "count_bias": 1.302325581395349
+    }
+  },
+  "val_dropped": {
+    "total": 47,
+    "fp": 44,
+    "tp": 3
+  },
+  "val_ci95_classifier_minus_v2": {
+    "dice": [
+      -0.005958599760707986,
+      0.0035104167806495425
+    ],
+    "obj_f1": [
+      0.014052202560110213,
+      0.026903419395915555
+    ],
+    "obj_precision": [
+      0.02962693428341602,
+      0.05274915115068563
+    ],
+    "obj_recall": [
+      -0.008824180114523655,
+      0.0
+    ],
+    "count_mae": [
+      -0.8837209302325579,
+      0.11627906976744162
+    ]
+  },
+  "adopt": true
+}

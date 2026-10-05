@@ -1,0 +1,16 @@
+{
+  "min_distance": 20,
+  "threshold_classifier": 0.34,
+  "model": "logistic",
+  "train_objects": 2913,
+  "val": {
+    "dice": 0.7628901426941531,
+    "iou": 0.6166712989867853,
+    "obj_f1": 0.8123359580052494,
+    "obj_precision": 0.7805800756620429,
+    "obj_recall": 0.8467852257181943,
+    "n_merged": 8,
+    "count_mae": 4.232558139534884,
+    "count_bias": 1.441860465116279
+  }
+}

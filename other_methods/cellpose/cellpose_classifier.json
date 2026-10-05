@@ -1,0 +1,17 @@
+{
+  "model": "logistic",
+  "threshold": 0.34,
+  "features": [
+    "area",
+    "mean_prob",
+    "contrast",
+    "rel_contrast",
+    "local_bg",
+    "solidity",
+    "eccentricity",
+    "nn_dist",
+    "n_objects",
+    "intensity"
+  ],
+  "fit_on": "interior objects of Cellpose fine-tuned on the train images (objects_train.csv)"
+}
