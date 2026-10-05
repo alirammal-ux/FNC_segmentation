@@ -8,6 +8,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from models.c_res_unet_logits import CResUnetLogits
+from models.c_res_unet_small_rf import CResUnetSmallRF
 from train.dataset import load_split, load_img_and_masks, compute_norm_stats,GreenTrainDataset, GreenEvalDataset, GAMMA_RANGE, WM_SIGMA
 from train.losses import BCEDiceLoss
 from evaluation.metrics import PixelMetrics
@@ -100,7 +101,7 @@ def validate(model,loader,criterion,device,use_amp):
 ###########################################################
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Training della c-ResUNet (logit) su Green")
+    p = argparse.ArgumentParser(description="Training of the c-ResUNet (logits) on Green")
 
     # data and output
     p.add_argument("--images_dir", type=Path, required=True)
@@ -118,10 +119,11 @@ def parse_args():
     p.add_argument("--num_workers", type=int, default=4)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--no_augment", action="store_true")
-    p.add_argument("--no_gamma", action="store_true") # gain only (green_v3)
-    p.add_argument("--norm", choices=["global", "per_image"], default="global") # per_image: green_v4
-    p.add_argument("--base_ch", type=int, default=16) # 32: green_v5
-    p.add_argument("--weight_maps", action="store_true") # weight maps of Morelli et al. 2021 in the BCE (green_v7)
+    p.add_argument("--no_gamma", action="store_true") # brightness augmentation: gain only, no gamma
+    p.add_argument("--norm", choices=["global", "per_image"], default="global") # per_image: statistics of each image
+    p.add_argument("--base_ch", type=int, default=16) # channels of the first level (32 = wider network)
+    p.add_argument("--weight_maps", action="store_true") # weight maps of Morelli et al. 2021 in the BCE
+    p.add_argument("--small_rf", action="store_true") # light network: no 5×5 bottleneck block, receptive field ~96 px
 
     # debug only: use the first N images (0 = all)
     p.add_argument("--train_limit", type=int, default=0)
@@ -156,7 +158,7 @@ def main():
     mean, std = compute_norm_stats(images) # train images only
     mean, std = float(mean), float(std)             # np.float32 → Python float (JSON, torch.load)
 
-    print(f"dati: {len(train_names)} train, {len(val_names)} val, caricati in {time.time() - t0:.0f} s | "
+    print(f"data: {len(train_names)} train, {len(val_names)} val, loaded in {time.time() - t0:.0f} s | "
           f"mean {mean:.4f} std {std:.4f} | device {device.type}, amp {use_amp}")
 
     # datasets
@@ -175,7 +177,7 @@ def main():
     val_loader = DataLoader(val_ds, batch_size=1, num_workers=0, pin_memory=pin)
 
     # model, optimizer, scheduler, scaler
-    model = CResUnetLogits(base_ch=args.base_ch).to(device)
+    model = (CResUnetSmallRF if args.small_rf else CResUnetLogits)(base_ch=args.base_ch).to(device)
     criterion = BCEDiceLoss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
@@ -239,14 +241,14 @@ def main():
 
             # early stopping
             if no_improve>=args.patience:                                 
-                print(f"early stopping: nessun miglioramento da {args.patience} epoche")
+                print(f"early stopping: no improvement for {args.patience} epochs")
                 break
 
     # save the final checkpoint
     torch.save({"model": model.state_dict(), "epoch": epoch, "val": va,
                 "mean": mean, "std": std, "config": config},
                args.out_dir / "last.pt")
-    print(f"fine: miglior Dice val {best_dice:.4f} all'epoca {best_epoch}")
+    print(f"end: best val Dice {best_dice:.4f} at epoch {best_epoch}")
 
 
 if __name__=='__main__':

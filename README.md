@@ -27,15 +27,18 @@ image → c-ResUNet (runs/green_v2/best.pt) → probability map
 ## Structure
 
 ```
-notebooks/       the four notebooks above
-models/          c-ResUNet (c_res_unet.py) and its logit-output version used for training
-train/           dataset, loss, training script, train/val split and 5-fold split
-evaluation/      prediction, post-processing, object features and classifier, metrics
-splits/          train/val split and the 5 cross-validation folds
-runs/            saved results read by the notebooks (checkpoint, logs, classifiers, cross-validation, test reference)
-other_methods/   the methods we compare with (threshold baselines, Cellpose) and how they were obtained
-kaggle/          notebooks used for GPU training on Kaggle
-data/            not included (see below)
+notebooks/        the four notebooks above
+models/           c-ResUNet (c_res_unet.py), its logit-output version used for training, and c-ResUNet-light
+                  (c_res_unet_small_rf.py: no 5×5 residual block in the bottleneck)
+train/            dataset, loss, training script, train/val split and 5-fold split
+evaluation/       prediction, post-processing, object features and classifier, metrics
+experiments/      code used only by the experiments (test-time augmentation)
+splits/           train/val split and the 5 cross-validation folds
+runs/             saved results read by the notebooks (checkpoints, logs, classifiers, cross-validation, test reference)
+other_methods/    the methods we compare with (threshold baselines, Cellpose) and how they were obtained
+kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them
+data/             not included (see below)
+requirements.txt  versions of the local environment
 ```
 
 ## Data
@@ -51,6 +54,7 @@ The cleaned masks (`data/cleaned_masks/{trainval,test}/Green/masks`) are created
 
 ## Environment
 
-Python 3.12 · PyTorch 2.14 · NumPy 2.4 · SciPy 1.17 · scikit-image 0.26 · scikit-learn 1.9 · pandas 3.0 · matplotlib 3.10 · joblib 1.6.
-The notebooks run on CPU; training needs a GPU (it was run on Kaggle, T4).
-Run everything from the repository root, so that `models`, `train` and `evaluation` are importable.
+Python 3.12 with the packages in `requirements.txt` (PyTorch 2.14, NumPy 2.4, SciPy 1.17, scikit-image 0.26,
+scikit-learn 1.9, pandas 3.0, matplotlib 3.10, joblib 1.6).
+The notebooks run on CPU; training needs a GPU and was run on Kaggle (T4): see `kaggle/README.md`.
+Run everything from the repository root, so that `models`, `train`, `evaluation` and `experiments` are importable.

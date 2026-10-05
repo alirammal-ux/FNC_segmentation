@@ -29,7 +29,7 @@ def split(names,counts,val_size,seed):
 
 def summarize(names,counts,train_names,val_names,c:dict):
     assert len(train_names) + len(val_names) == len(names)
-    assert all([img not in val_names for img in train_names]), 'un img è sia in train che in val'
+    assert all([img not in val_names for img in train_names]), 'an image is both in train and in val'
 
 
     df=pd.DataFrame({
@@ -41,7 +41,7 @@ def summarize(names,counts,train_names,val_names,c:dict):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Split train/val stratificato per numero di cellule")
+    parser = argparse.ArgumentParser(description="Train/val split stratified by number of cells")
     parser.add_argument("--images_dir", type=Path, required=True)
     parser.add_argument("--coco_json", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
@@ -61,7 +61,7 @@ if __name__ == "__main__":
             "train": train_names,
             "val": val_names,
         }, f, indent=2)
-    print(f"salvato in {args.out}")
+    print(f"saved to {args.out}")
 
 
 

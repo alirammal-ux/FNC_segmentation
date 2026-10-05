@@ -82,12 +82,12 @@ if __name__ == "__main__":
     # 1) perfect, confident prediction → loss ≈ 0
     perfect = (target * 2 - 1) * 20        # logit +20 on cells, −20 on background
     loss, bce, dice = crit(perfect, target)
-    print(f"perfetta:  loss={loss:.4f}  bce={bce:.4f}  dice={dice:.4f}")
+    print(f"perfect:   loss={loss:.4f}  bce={bce:.4f}  dice={dice:.4f}")
     assert loss < 1e-3
 
     # 2) completely wrong and confident → high loss
     loss, bce, dice = crit(-perfect, target)
-    print(f"sbagliata: loss={loss:.4f}  bce={bce:.4f}  dice={dice:.4f}")
+    print(f"wrong:     loss={loss:.4f}  bce={bce:.4f}  dice={dice:.4f}")
     assert loss > 10
 
     # 3) "lazy" net: 0.6% cells, confidently predicts all background
@@ -95,7 +95,7 @@ if __name__ == "__main__":
     lazy_target[0, 0, :6, :10] = 1                    # 60 pixels out of 10 000
     lazy = torch.full_like(lazy_target, -5.0)         # p = sigmoid(−5) ≈ 0.0067 everywhere
     loss, bce, dice = crit(lazy, lazy_target)
-    print(f"pigra:     loss={loss:.4f}  bce={bce:.4f}  dice={dice:.4f}")
+    print(f"lazy:      loss={loss:.4f}  bce={bce:.4f}  dice={dice:.4f}")
     assert bce < 0.05 and dice < 0.1                  # BCE is almost happy, Dice exposes it
 
     # 4) the gradient pushes cell logits UP and background logits DOWN
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     loss, _, _ = crit(logits, target)
     loss.backward()
     g = logits.grad
-    print("gradiente medio  cellula:", g[target == 1].mean().item(), " sfondo:", g[target == 0].mean().item())
+    print("mean gradient  cell:", g[target == 1].mean().item(), " background:", g[target == 0].mean().item())
     assert torch.isfinite(g).all()
     assert (g[target == 1] < 0).all() and (g[target == 0] > 0).all()
 
@@ -115,6 +115,6 @@ if __name__ == "__main__":
     _, _, dice32 = crit(x, t)
     _, _, dice16 = crit(x.half(), t.half())
     print(f"dice float32={dice32:.6f}  float16={dice16:.6f}")
-    assert abs(dice16 - dice32) < 1e-4, "in float16 le somme vanno in overflow: manca il .float()?"
+    assert abs(dice16 - dice32) < 1e-4, "in float16 the sums overflow: is the .float() missing?"
 
-    print("tutti i test superati")
+    print("all tests passed")

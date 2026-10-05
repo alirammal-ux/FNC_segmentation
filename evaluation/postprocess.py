@@ -109,7 +109,7 @@ if __name__=='__main__':
 
     m = postprocess(prob)
     lab = label_instances(m)
-    print("oggetti:", lab.max(), "| pixel:", m.sum())
+    print("objects:", lab.max(), "| pixels:", m.sum())
     assert lab.max() == 2                    # small and below-threshold ones removed
     assert m[47, 12]                         # hole filled
     assert m.sum() == 225 + 225              # two filled cells
@@ -127,14 +127,14 @@ if __name__=='__main__':
     ring = np.zeros((40, 40), dtype=np.float32)
     ring[5:17, 5:17] = 0.9       # 144 px …
     ring[8:14, 8:14] = 0.1       # … with a 36 px hole → 108 px ring
-    print("anello (108 px + buco 36):", postprocess(ring).sum())
+    print("ring (108 px + 36 px hole):", postprocess(ring).sum())
     assert postprocess(ring).sum() == 144
 
     # watershed: two touching discs (r=15) → 2 objects; a single disc stays 1
     yy, xx = np.mgrid[:60, :90]
     two = ((yy - 30) ** 2 + (xx - 30) ** 2 <= 15 ** 2) | ((yy - 30) ** 2 + (xx - 57) ** 2 <= 15 ** 2)
     one = (yy - 30) ** 2 + (xx - 30) ** 2 <= 15 ** 2
-    print("watershed, due dischi attaccati:", label_instances(two).max(), "→", split_touching(two).max())
+    print("watershed, two touching discs:", label_instances(two).max(), "→", split_touching(two).max())
     assert label_instances(two).max() == 1 and split_touching(two).max() == 2
     assert split_touching(one).max() == 1
     assert (split_touching(two) > 0).sum() == two.sum()   # no pixel lost
@@ -146,4 +146,4 @@ if __name__=='__main__':
     b[20:25, 25:30] = True     # touches the right border → removed
     assert label_instances(remove_border_objects(b)).max() == 1 and remove_border_objects(b)[12, 12]
 
-    print("tutti i test superati")
+    print("all tests passed")

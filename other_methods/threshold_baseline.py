@@ -66,7 +66,7 @@ def evaluate(images, masks, threshold_fn):
 
 
 def main():
-    p = argparse.ArgumentParser(description="Baseline a soglia (Otsu e robusta) sulla validation")
+    p = argparse.ArgumentParser(description="Threshold baselines (Otsu and robust) on the validation set")
     p.add_argument("--images_dir", type=Path, required=True)
     p.add_argument("--masks_dir", type=Path, required=True)
     p.add_argument("--split_json", type=Path, required=True)
@@ -78,7 +78,7 @@ def main():
     val_imgs, val_masks = load_img_and_masks(args.images_dir, args.masks_dir, val_names)
 
     k, dice_train = fit_k(train_imgs, train_masks, ks=np.arange(1.0, 30.5, 0.5))
-    print(f"k scelto sul train: {k} (Dice di pixel sul train {dice_train:.3f})")
+    print(f"k chosen on train: {k} (pixel Dice on train {dice_train:.3f})")
 
     results = {
         "otsu": evaluate(val_imgs, val_masks, threshold_otsu),
@@ -91,7 +91,7 @@ def main():
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with open(args.out, "w") as f:
         json.dump(results, f, indent=2)
-    print(f"salvato in {args.out}")
+    print(f"saved to {args.out}")
 
 
 if __name__ == "__main__":

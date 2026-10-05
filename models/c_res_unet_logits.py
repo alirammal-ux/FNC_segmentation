@@ -24,12 +24,12 @@ if __name__=='__main__':
     p_madre=sum(p.numel() for p in Unet_madre.parameters()) # numel() = elements of each weight tensor
     p_model=sum(p.numel() for p in model.parameters())
     assert(p_madre==p_model)
-    print('stesso numero di params')
+    print('same number of parameters')
 
 
     # same weight names and shapes
     model.load_state_dict(Unet_madre.state_dict())
-    print('state dict compatibile')
+    print('state dict compatible')
 
     # same forward: sigmoid(logits) == original output
     Unet_madre.eval()
@@ -37,7 +37,7 @@ if __name__=='__main__':
     x=torch.randn(1,3,1200,1600)
     with torch.no_grad():
         assert torch.allclose(nn.functional.sigmoid(model(x)), Unet_madre(x), atol=1e-6) # allclose, not ==: floats
-        print('forward coerente')
+        print('same forward output')
 
 
 

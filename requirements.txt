@@ -1,0 +1,9 @@
+# Local environment of the notebooks (Python 3.12.13, CPU). GPU training ran on Kaggle: see kaggle/README.md.
+torch==2.14.0
+numpy==2.4.6
+scipy==1.17.1
+scikit-image==0.26.0
+scikit-learn==1.9.0
+pandas==3.0.3
+matplotlib==3.10.9
+joblib==1.6.0

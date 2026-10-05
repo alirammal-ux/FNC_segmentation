@@ -19,7 +19,7 @@ from evaluation.object_features import FEATURES
 from evaluation.postprocess import label_instances, postprocess
 from evaluation.tune import bootstrap_diff, metrics_from_counts
 
-# winner of select_object_classifier.py (cross-validation on train, 2026-09-28)
+# winner of select_object_classifier.py (cross-validation on train)
 THRESHOLD = 0.37      # an object is dropped if P(TP) < THRESHOLD
 
 
@@ -77,7 +77,7 @@ def main():
     ci = {m: [float(v) for v in bootstrap_diff(counts["v2 + classifier"], counts["v2"], m)]
           for m in ["dice", "obj_f1", "obj_precision", "obj_recall", "count_mae"]}
     for m, (lo, hi) in ci.items():
-        print(f"classifier − v2, {m}: IC95% [{lo:+.4f}, {hi:+.4f}]")
+        print(f"classifier − v2, {m}: 95% CI [{lo:+.4f}, {hi:+.4f}]")
     adopt = ci["obj_f1"][0] > 0 and ci["dice"][1] >= 0 and ci["count_mae"][0] <= 0
     print("decision:", "ADOPT" if adopt else "do not adopt")
 

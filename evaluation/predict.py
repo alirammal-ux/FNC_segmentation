@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 
 
 from models.c_res_unet_logits import CResUnetLogits
+from models.c_res_unet_small_rf import CResUnetSmallRF
 from train.dataset import GreenEvalDataset,load_img_and_masks,load_split
 
 
@@ -19,7 +20,8 @@ def load_model(ckpt_path,device):
     ckpt=torch.load(ckpt_path,map_location=device)
     cfg=ckpt.get('config',{}) # v1-v3: no base_ch/norm → defaults
 
-    model=CResUnetLogits(base_ch=cfg.get('base_ch',16)).to(device) #v5 use a 32, all the others use 16 
+    arch=CResUnetSmallRF if cfg.get('small_rf',False) else CResUnetLogits # small_rf: light network (no 5×5 block)
+    model=arch(base_ch=cfg.get('base_ch',16)).to(device) # base channels saved in the config (default 16)
     model.load_state_dict(ckpt['model'])
     model.eval()
     return model,ckpt['mean'],ckpt['std'],ckpt['epoch'],cfg.get('norm','global')
@@ -43,7 +45,7 @@ def main():
     parser.add_argument("--images_dir", type=Path, required=True)
     parser.add_argument("--masks_dir", type=Path, required=True)
     parser.add_argument("--split_json", type=Path, required=True)
-    parser.add_argument("--subset", choices=["train", "val"], default="val")
+    parser.add_argument("--subset", choices=["train", "val", "all"], default="val") # all: every image of images_dir (test)
     parser.add_argument("--out", type=Path, required=True)
     args = parser.parse_args()
 
@@ -53,6 +55,8 @@ def main():
 
     train_names,val_names=load_split(args.split_json)
     names=val_names if args.subset == 'val' else train_names
+    if args.subset == 'all':
+        names=sorted(p.name for p in args.images_dir.glob('*.png'))
     images,masks= load_img_and_masks(args.images_dir,args.masks_dir,names)
     dataset=GreenEvalDataset(images,masks,names,mean,std,norm=norm)
 
@@ -61,7 +65,7 @@ def main():
     probs,pred_names=predict_probs(model,dataset,device)
     args.out.parent.mkdir(parents=True,exist_ok=True)
     np.savez_compressed(args.out,probs=probs,masks=masks,names=np.array(pred_names))#Save several arrays into a single file in compressed .npz format.
-    print(f"{args.ckpt} (epoca {epoch}) | {len(pred_names)} immagini in {time.time() - t0:.0f} s | salvato in {args.out}")
+    print(f"{args.ckpt} (epoch {epoch}) | {len(pred_names)} images in {time.time() - t0:.0f} s | saved to {args.out}")
 
 if __name__=='__main__':
     main()

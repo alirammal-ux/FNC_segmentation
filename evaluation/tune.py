@@ -81,7 +81,7 @@ def bootstrap_diff(count_a,count_b,metric,n_boot=2000,seed=0):
 
 def main():
     parser = argparse.ArgumentParser(description="Threshold × model grid on the validation set, with bootstrap")
-    parser.add_argument("--runs", type=Path, nargs="+", required=True)     # e.g. runs/green_v1 runs/green_v2
+    parser.add_argument("--runs", type=Path, nargs="+", required=True)     # e.g. runs/a runs/b
     parser.add_argument("--thresholds", type=float, nargs="+", default=[0.3, 0.4, 0.5, 0.6, 0.7])
     parser.add_argument("--out", type=Path, default=Path("runs/tuning_val.csv"))
     args = parser.parse_args()
@@ -91,21 +91,21 @@ def main():
         d=np.load(run/'pred_val.npz')
         for t in args.thresholds:
             c= per_img_counts(d['probs'],d['masks'],t)
-            counts[(run.name,t)]=c # Path("runs/green_v2").name == "green_v2"
+            counts[(run.name,t)]=c # Path("runs/a").name == "a"
             rows.append({"run": run.name, "threshold": t, **metrics_from_counts(c)})
 
     table = pd.DataFrame(rows)
     print(table.round(4).to_string(index=False))
     table.to_csv(args.out, index=False)
 
-    a, b = args.runs[-1].name, args.runs[0].name        # e.g. green_v2 vs green_v1
+    a, b = args.runs[-1].name, args.runs[0].name        # last run vs first run
     for metric in ["dice", "obj_f1", "count_mae"]:
         lo, hi = bootstrap_diff(counts[(a, 0.5)], counts[(b, 0.5)], metric)
-        print(f"{a} − {b} (soglia 0.5), {metric}: IC95% [{lo:+.4f}, {hi:+.4f}]")
+        print(f"{a} − {b} (threshold 0.5), {metric}: 95% CI [{lo:+.4f}, {hi:+.4f}]")
     for t in args.thresholds:
         if t != 0.5:
             lo, hi = bootstrap_diff(counts[(a, t)], counts[(a, 0.5)], "obj_f1")
-            print(f"{a}: soglia {t} − soglia 0.5, obj_f1: IC95% [{lo:+.4f}, {hi:+.4f}]")
+            print(f"{a}: threshold {t} − threshold 0.5, obj_f1: 95% CI [{lo:+.4f}, {hi:+.4f}]")
 
 if __name__ == "__main__":
     main()

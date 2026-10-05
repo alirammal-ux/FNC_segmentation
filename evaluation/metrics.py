@@ -228,7 +228,7 @@ if __name__ == "__main__":
     gt2 = squares((30, 40), [(5, 5, 10, 10), (5, 16, 10, 10)])
     fused = squares((30, 40), [(5, 5, 10, 21)])
     d_px = dice_iou(*confusion_counts(torch.from_numpy(fused > 0), torch.from_numpy(gt2 > 0)))[0]
-    print("fusione → (tp, fp, fn, fuse):", match_objects(fused, gt2), "| Dice di pixel:", round(d_px, 4))
+    print("merge → (tp, fp, fn, merged):", match_objects(fused, gt2), "| pixel Dice:", round(d_px, 4))
     assert match_objects(fused, gt2) == (0, 1, 2, 1)
     # 11) empty image, no prediction → all 1
     empty_lab = np.zeros((10, 10), dtype=np.int32)
@@ -237,10 +237,10 @@ if __name__ == "__main__":
     om = ObjectMetrics()
     om.counts = [(3, 2), (1, 2), (5, 5)]
     r = om.compute()
-    print("conteggio:", {k: round(v, 3) for k, v in r.items() if k.startswith("count")})
+    print("count:", {k: round(v, 3) for k, v in r.items() if k.startswith("count")})
     assert abs(r["count_mae"] - 2 / 3) < 1e-9     # (1 + 1 + 0) / 3
     assert r["count_bias"] == 0                     # +1 and −1 cancel out!
     assert abs(r["count_mape"] - 100 / 3) < 1e-9    # (50% + 50% + 0%) / 3
-    print('tutti i test superati')
+    print('all tests passed')
 
 
