@@ -6,21 +6,25 @@ images) of the object F1 difference is entirely above 0, with the pixel Dice and
 Post-processing changes first had to gain at least +0.005 of out-of-fold F1 on the training images before being checked on
 the validation images.
 
+`experiments.ipynb` shows all the results below: it recomputes the comparisons of the network variants from their
+checkpoints (about 20 minutes on CPU) and reads the cross-validation and the post-processing results from `runs/`.
+This page is the index.
+
 ## Network and training recipe
 
 One training per variant (seed 42, everything else as the adopted recipe), compared on the 43 validation images (network +
-post-processing), difference variant − adopted network. Logs and configurations: `runs/cresunet_light_<variant>/`,
-`runs/cresunet/`; executed with `kaggle/recipe_variants.ipynb` and `kaggle/train.ipynb`. The c-ResUNet of Morelli et al.
+post-processing), difference variant − adopted network. Checkpoints, logs and configurations:
+`runs/cresunet_light_<variant>/`, `runs/cresunet/`; executed with `kaggle/recipe_variants.ipynb` and `kaggle/train.ipynb`. The c-ResUNet of Morelli et al.
 (2021) is the ResUNet of Zhang et al. (2018) with two additions, a learned colour conversion and the 5 × 5 block, evaluated
 there only together (on the Yellow collection); the adopted network keeps the first and drops the second.
 
 | variant | object F1 | other demonstrable differences | decision |
 |---|---|---|---|
 | c-ResUNet of Morelli et al., 2021 (with the 5 × 5 bottleneck block, 1.32 M parameters) | [−0.020, +0.006] | none; training images F1 [−0.006, +0.010] | not adopted (2.6× the parameters for no gain) |
-| early stopping (patience 15; stopped at epoch 52) | [−0.034, −0.001] | precision worse | not adopted |
+| early stopping (patience 15; stopped at epoch 52) | [−0.033, −0.001] | precision worse | not adopted |
 | no gamma augmentation | [−0.013, +0.009] | none | not adopted |
 | per-image normalization | [−0.037, +0.005] | count error worse [+0.05, +1.26] | not adopted |
-| wider network (32 base channels, 2.0 M parameters) | [−0.011, +0.019] | precision better [+0.006, +0.035]; training images: Dice worse | not adopted |
+| wider network (32 base channels, 2.0 M parameters) | [−0.011, +0.019] | precision better [+0.006, +0.034]; training images: Dice worse | not adopted |
 | 200 epochs | [−0.005, +0.016] | none | not adopted |
 
 ## Post-processing
@@ -30,9 +34,9 @@ Each variant changes one element of the pipeline, with the object classifier cho
 
 | variant | result | decision |
 |---|---|---|
-| **minimum area 300 px** instead of 120 | out-of-fold +0.006; validation F1 [+0.001, +0.009]; cross-validation [+0.001, +0.009] | **adopted** |
+| **minimum area 300 px** instead of 120 | out-of-fold +0.006; validation F1 [+0.001, +0.008]; cross-validation [+0.001, +0.009] | **adopted** |
 | minimum area 160 / 200 / 250 px | out-of-fold +0.002 / +0.003 / +0.004 | below the required gain |
-| minimum area 350 / 400 px | out-of-fold +0.006; validation F1 [−0.005, +0.014] / [−0.009, +0.014] | not adopted |
+| minimum area 350 / 400 px | out-of-fold +0.006; validation F1 [−0.005, +0.013] / [−0.009, +0.014] | not adopted |
 | no watershed; seeds 12 / 15 / 25 px apart | out-of-fold −0.002; +0.004 / +0.001 / −0.002 (12 and 15 px cut 3 and 1 cells in two) | 20 px kept |
 | test-time augmentation (8 symmetries; `experiments/predict_tta.py`) | network alone, training images: F1 +0.0048 | below the required gain |
 | features from the annotation protocol | out-of-fold −0.00004 | not adopted |

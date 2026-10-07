@@ -51,7 +51,7 @@ models/           c-ResUNet (c_res_unet.py), its logit-output version used for t
                   (c_res_unet_small_rf.py: no 5×5 residual block in the bottleneck)
 train/            dataset, loss, training script, train/val split and 5-fold split
 evaluation/       prediction, post-processing, object features and classifier, metrics
-experiments/      the experiments that were tried and not adopted: index, results, code (test-time augmentation)
+experiments/      the experiments that were tried: notebook (experiments.ipynb), index of the results, TTA code
 splits/           train/val split and the 5 cross-validation folds
 runs/             saved results read by the notebooks: cresunet_light/ (adopted network and classifiers), cresunet/
                   (c-ResUNet, Morelli et al.), cresunet_light_cv*/ and cv_compare/ (cross-validation), cresunet_light_<variant>/
