@@ -27,7 +27,6 @@ bootstrap interval over the images (notebook 04).
 | method | object F1 | precision | recall | pixel Dice | count error (MAE) |
 |---|---|---|---|---|---|
 | **adopted pipeline** | **0.834** [0.810, 0.858] | 0.807 | 0.864 | 0.758 | 3.9 |
-| c-ResUNet (Morelli et al., 2021) + watershed + classifier | 0.821 | 0.783 | 0.864 | 0.752 | 4.1 |
 | Cellpose-SAM fine-tuned on the same images | 0.834 | 0.854 | 0.815 | 0.757 | 3.7 |
 | Cellpose-SAM zero-shot | 0.574 | 0.412 | 0.944 | 0.579 | 21.6 |
 | robust threshold (median + 6.5 MAD) | 0.506 | 0.441 | 0.595 | 0.579 | 9.8 |
