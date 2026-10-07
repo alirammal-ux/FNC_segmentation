@@ -5,7 +5,7 @@ from models.c_res_unet_logits import CResUnetLogits
 
 class CResUnetSmallRF(CResUnetLogits):
     '''Same as CResUnetLogits without the second bottleneck block (the 5×5 residual block):
-    receptive field ~96 px instead of ~160 px, 0.50 M parameters instead of 1.32 M.
+    receptive field 96 px instead of 160 px, 0.50 M parameters instead of 1.32 M.
     The adopted (light) network; the original model (c_res_unet.py) is not modified.'''
 
     def __init__(self, n_in=3, base_ch=16):
