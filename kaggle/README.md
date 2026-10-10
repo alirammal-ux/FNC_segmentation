@@ -30,7 +30,7 @@ Both are uploaded as zip files (Kaggle extracts them). The notebooks locate the 
 | `train.ipynb` | training of c-ResUNet-light (adopted) or c-ResUNet (Morelli et al., 2021) on the train/validation split | `cresunet_light/`, `cresunet/` | ~1 h each |
 | `cross_validation.ipynb` | 5-fold cross-validation of two recipes: adopted, adopted + weight maps | `cresunet_light_cv{k}/`, `cresunet_light_wm_cv{k}/` | ~4.8 h per recipe |
 | `recipe_variants.ipynb` | five trainings of the adopted network, each with one change to the training recipe, and test-time augmentation (see below) | `cresunet_light_<variant>/`, `cresunet_light_tta/` | ~6 h |
-| `../other_methods/cellpose/kaggle_cellpose.ipynb` | Cellpose: zero-shot, fine-tuning on the training images, predictions of the fine-tuned model (Internet on) | `runs/cellpose/` (the files kept are in `other_methods/cellpose/`) | ~7 h |
+| `../other_methods/cellpose/kaggle_cellpose.ipynb` | Cellpose: zero-shot, fine-tuning on the training images, predictions of the fine-tuned model (Internet on) | `runs/cellpose/` (the files kept are in `other_methods/cellpose/`) | ~8 h |
 
 This repository keeps only what the notebooks read: in `runs/`, the checkpoints and classifiers of the two networks and,
 for the cross-validation and the recipe variants, `config.json` and `log.csv`. The probability maps (`pred_*.npz`, ~70 MB

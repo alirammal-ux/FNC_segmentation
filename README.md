@@ -27,7 +27,7 @@ bootstrap interval over the images (notebook 04).
 | method | object F1 | precision | recall | pixel Dice | count error (MAE) |
 |---|---|---|---|---|---|
 | **adopted pipeline** | **0.834** [0.810, 0.858] | 0.807 | 0.864 | 0.758 | 3.9 |
-| Cellpose-SAM fine-tuned on the same images | 0.834 | 0.854 | 0.815 | 0.757 | 3.7 |
+| Cellpose-SAM fine-tuned on the same images | 0.819 | 0.861 | 0.782 | 0.743 | 3.8 |
 | Cellpose-SAM zero-shot | 0.574 | 0.412 | 0.944 | 0.579 | 21.6 |
 | robust threshold (median + 6.5 MAD) | 0.506 | 0.441 | 0.595 | 0.579 | 9.8 |
 
@@ -55,7 +55,7 @@ experiments/      the experiments that were tried: notebook (experiments.ipynb),
 splits/           train/val split and the 5 cross-validation folds
 runs/             saved results read by the notebooks: cresunet_light/ (adopted network and classifiers), cresunet/
                   (c-ResUNet, Morelli et al.), cresunet_light_cv*/ and cv_compare/ (cross-validation), cresunet_light_<variant>/
-                  (training variants), test_reference.json (expected test numbers, checked by notebook 04)
+                  (training variants)
 other_methods/    the methods we compare with (threshold baselines, Cellpose) and how they were obtained
 kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them;
                   executed/: the same notebooks as they ran, with their outputs
@@ -69,7 +69,7 @@ Download the Green collection (Clissa et al., 2024, AMS Acta, University of Bolo
 
 ```bash
 wget -c https://amsacta.unibo.it/7347/28/green.zip
-unzip green.zip -d data/      
+unzip green.zip -d data/
 ```
 
 The cleaned masks (`data/cleaned_masks/{trainval,test}/Green/masks`) are created by `notebooks/01_eda_green.ipynb`.
@@ -79,16 +79,17 @@ The cleaned masks (`data/cleaned_masks/{trainval,test}/Green/masks`) are created
 Python 3.12 with the packages in `requirements.txt` (PyTorch 2.14, NumPy 2.4, SciPy 1.17, scikit-image 0.26,
 scikit-learn 1.9, pandas 3.0, matplotlib 3.10, joblib 1.6).
 The notebooks run on CPU; training needs a GPU and was run on Kaggle (T4): see `kaggle/README.md`.
-Run everything from the repository root, so that `models`, `train`, `evaluation` and `experiments` are importable.
+Run everything from the repository root, so that `models`, `train`, `evaluation`, `experiments` and `other_methods` are importable.
 
 ## How to run
 
 From the repository root, after downloading the data:
 
 1. `notebooks/01_eda_green.ipynb` → cleaned masks (needed by everything else);
-2. `notebooks/02` → `04` in order (CPU; 04 takes about 15 minutes). They load the saved checkpoints and classifiers in
-   `runs/` and check every number against the saved references.
+2. `notebooks/02` → `04` in order (CPU; 04 takes about 10 minutes). They load the saved checkpoints and classifiers in
+   `runs/`.
 
-To retrain instead of loading: the network with `kaggle/train.ipynb` (GPU, ~1 h), then the probability maps of the training
-and validation images (`python -m evaluation.predict --ckpt runs/cresunet_light/best.pt --subset train|val ...`) and the
-object classifier (`python -m evaluation.watershed_classifier`).
+To retrain instead of loading: the network with `kaggle/train.ipynb` (GPU, ~1 h); then the probability maps of the training
+images (`python -m evaluation.predict --ckpt runs/cresunet_light/best.pt --subset train --out runs/cresunet_light/pred_train.npz ...`)
+and, in the same way, of the validation images (`pred_val.npz`); finally the object classifier
+(`python -m evaluation.watershed_classifier`).

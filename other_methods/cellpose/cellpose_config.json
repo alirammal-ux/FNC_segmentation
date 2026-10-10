@@ -1,53 +1,14 @@
 {
   "cellpose_version": "4.2.1.1",
-  "model": "default of the version",
-  "input": "G channel, 2-D uint8",
+  "model": "Cellpose-SAM (default model of the version)",
+  "input": "green channel",
   "diameter": 30,
-  "eval": "Cellpose default thresholds",
+  "other_settings": "Cellpose defaults",
   "fine_tuning": {
     "train_images": 169,
     "n_epochs": 100,
-    "min_train_masks": 0,
-    "train_seg_defaults": {
-      "train_data": "None",
-      "train_labels": "None",
-      "train_files": "None",
-      "train_labels_files": "None",
-      "train_probs": "None",
-      "test_data": "None",
-      "test_labels": "None",
-      "test_files": "None",
-      "test_labels_files": "None",
-      "test_probs": "None",
-      "channel_axis": "None",
-      "load_files": "True",
-      "batch_size": "1",
-      "learning_rate": "1e-05",
-      "SGD": "False",
-      "n_epochs": "100",
-      "weight_decay": "0.1",
-      "normalize": "True",
-      "compute_flows": "False",
-      "save_path": "None",
-      "save_every": "100",
-      "save_each": "False",
-      "nimg_per_epoch": "None",
-      "nimg_test_per_epoch": "None",
-      "rescale": "False",
-      "scale_range": "None",
-      "bsize": "None",
-      "min_train_masks": "5",
-      "model_name": "None",
-      "class_weights": "None"
-    }
+    "min_train_masks": 0
   },
-  "timing": {
-    "zero_shot_train_s_per_image": 18.21424644374283,
-    "zero_shot_val_s_per_image": 18.21021725410639,
-    "zero_shot_test_s_per_image": 18.164525958469937,
-    "fine_tuning_minutes": 257.91197584470115,
-    "fine_tuned_val_s_per_image": 18.048466355301613,
-    "fine_tuned_test_s_per_image": 18.02766525404794
-  },
+  "probability": "sigmoid(cellprob) x 255, uint8",
   "probe": false
 }

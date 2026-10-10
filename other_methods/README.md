@@ -17,10 +17,11 @@ Cellpose cannot run on our CPU machine in reasonable time (~290 M parameters); i
   fine-tuning on the 169 training images (100 epochs, default learning rate and optimizer, `min_train_masks = 0`);
   predictions of the fine-tuned model, masks and cell probabilities, on the training, validation and test images.
 - Test predictions: `cellpose_test.npz` (zero-shot masks), `cellpose_ftp_test.npz` (fine-tuned masks + probabilities in 8 bit).
-- The stored files come from two runs of an earlier version of the notebook, split in two: zero-shot and fine-tuning
-  (settings in `cellpose_config.json`), then the predictions of the fine-tuned model (settings in `cellpose_ftp_config.json`).
-  `kaggle_cellpose.ipynb` runs the same steps in one session. A new run gives close but not identical numbers: the
-  fine-tuning of Cellpose has no fixed seed.
-- **Fine-tuned + classifier**: the same object classifier as our pipeline, selected and trained on the objects that the
-  fine-tuned Cellpose predicts on the training images (`objects_train.csv`, selection in `classifier_results.json`):
-  logistic regression, keep if P(true) ≥ 0.34. Stored frozen in `cellpose_classifier.joblib` (+ `cellpose_classifier.json`).
+- The stored files come from one run of `kaggle_cellpose.ipynb` (settings in `cellpose_config.json`; the run with its
+  outputs: `kaggle/executed/kaggle-cellpose.ipynb`). The zero-shot predictions are deterministic (identical to those of an
+  earlier run); the fine-tuning has no fixed seed, so another run gives close but not identical numbers.
+- **Fine-tuned + classifier**: the object classifier of our pipeline (logistic regression on the same 10 features; border
+  objects never judged), trained on the objects that the fine-tuned Cellpose predicts on the training images
+  (`objects_train.csv`), with its threshold chosen for Cellpose by the same 5-fold cross-validation by image:
+  keep if P(true) ≥ 0.33 (out-of-fold F1 0.8175; gradient boosting reaches the same, `classifier_results.json`).
+  Stored frozen in `cellpose_classifier.joblib` (+ `cellpose_classifier.json`).

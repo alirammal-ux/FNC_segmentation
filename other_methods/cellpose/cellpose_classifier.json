@@ -1,6 +1,6 @@
 {
   "model": "logistic",
-  "threshold": 0.34,
+  "threshold": 0.33,
   "features": [
     "area",
     "mean_prob",
