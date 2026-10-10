@@ -66,3 +66,11 @@ objects of the other folds. Two recipes: the adopted one (`runs/cresunet_light_c
 - **Watershed** (20 px): F1 [+0.002, +0.010], better in 4 folds of 5 → kept.
 - **Minimum area 300 px**: F1 [+0.001, +0.009], better in 5 folds of 5 → adopted.
 - Differences between groups of images (folds: F1 0.77–0.85) are much larger than the differences between recipes.
+
+## Objects at the image border
+
+Of the objects found by the network whose centre lies within 10 px of the image border (cut by about half or more), 92%
+have no annotated pixel at all, against 15% in the image interior; they are not fainter (median contrast 2.15, against
+2.11). The cause cannot be determined from these data. Removing all border objects: validation F1 [−0.001, +0.011]
+(precision up, recall down); letting the classifier judge them: no out-of-fold gain → border objects kept (notebook 03,
+section 6). Source: `runs/cresunet_light/border_check.json`.

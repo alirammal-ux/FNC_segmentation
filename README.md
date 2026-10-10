@@ -57,7 +57,8 @@ runs/             saved results read by the notebooks: cresunet_light/ (adopted 
                   (c-ResUNet, Morelli et al.), cresunet_light_cv*/ and cv_compare/ (cross-validation), cresunet_light_<variant>/
                   (training variants), test_reference.json (expected test numbers, checked by notebook 04)
 other_methods/    the methods we compare with (threshold baselines, Cellpose) and how they were obtained
-kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them
+kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them;
+                  executed/: the same notebooks as they ran, with their outputs
 data/             not included (see below)
 requirements.txt  versions of the local environment
 ```
@@ -68,7 +69,7 @@ Download the Green collection (Clissa et al., 2024, AMS Acta, University of Bolo
 
 ```bash
 wget -c https://amsacta.unibo.it/7347/28/green.zip
-unzip green.zip -d data/      # → data/green/{trainval,test,unlabelled}
+unzip green.zip -d data/      
 ```
 
 The cleaned masks (`data/cleaned_masks/{trainval,test}/Green/masks`) are created by `notebooks/01_eda_green.ipynb`.

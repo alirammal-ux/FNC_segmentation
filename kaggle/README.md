@@ -36,6 +36,8 @@ This repository keeps only what the notebooks read: in `runs/`, the checkpoints 
 for the cross-validation and the recipe variants, `config.json` and `log.csv`. The probability maps (`pred_*.npz`, ~70 MB
 per run, ~400 MB for the test-time augmentation) are not included.
 
+The notebooks as they ran, with their outputs, are in `executed/`.
+
 ### What `recipe_variants.ipynb` does
 
 It checks whether the training recipe of the adopted network can be improved. **Part 1:** five trainings of

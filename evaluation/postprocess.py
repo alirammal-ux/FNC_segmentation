@@ -51,7 +51,7 @@ def label_instances(mask,connectivity=1):
 
 def remove_border_objects(mask,connectivity=1):
     '''Tested, not adopted: remove objects touching the image border.
-    Annotation habit: only 0.4% of the train cells touch it (~4.4% expected).'''
+    In the annotations, cells touching the image border are rare (notebook 03, section 6).'''
     labels=measure.label(mask,connectivity=connectivity)
     border=np.unique(np.concatenate([labels[0],labels[-1],labels[:,0],labels[:,-1]]))
     return mask & ~np.isin(labels,border[border>0])

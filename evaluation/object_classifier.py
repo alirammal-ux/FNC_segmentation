@@ -1,5 +1,6 @@
 '''Applying a trained object classifier to a table of predicted objects. Objects touching the image border are never
-judged (always kept): cells cut by the border are almost never annotated, a habit the pipeline should not imitate.'''
+judged (always kept): in the annotations they rarely have a counterpart, a pattern linked to the cut and not documented in
+the annotation protocol, which the classifier should not learn (notebook 03, section 6).'''
 
 import numpy as np
 

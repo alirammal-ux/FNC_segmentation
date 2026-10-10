@@ -1,0 +1,61 @@
+{
+  "bands": [
+    {
+      "distance of the centre from the border (px)": "0-10",
+      "objects": 102,
+      "no annotated pixel (%)": 92.2,
+      "contrast (median)": 2.15,
+      "background vs interior": 0.87
+    },
+    {
+      "distance of the centre from the border (px)": "10-20",
+      "objects": 78,
+      "no annotated pixel (%)": 48.7,
+      "contrast (median)": 2.15,
+      "background vs interior": 0.88
+    },
+    {
+      "distance of the centre from the border (px)": "20-30",
+      "objects": 62,
+      "no annotated pixel (%)": 22.6,
+      "contrast (median)": 2.26,
+      "background vs interior": 0.88
+    },
+    {
+      "distance of the centre from the border (px)": "30-50",
+      "objects": 136,
+      "no annotated pixel (%)": 24.3,
+      "contrast (median)": 1.91,
+      "background vs interior": 0.89
+    },
+    {
+      "distance of the centre from the border (px)": "50-100",
+      "objects": 353,
+      "no annotated pixel (%)": 26.1,
+      "contrast (median)": 1.95,
+      "background vs interior": 0.91
+    },
+    {
+      "distance of the centre from the border (px)": ">100",
+      "objects": 3027,
+      "no annotated pixel (%)": 15.5,
+      "contrast (median)": 2.11,
+      "background vs interior": 1.0
+    }
+  ],
+  "remove_border_objects_val_ci95": {
+    "obj_f1": [
+      -0.0008,
+      0.0113
+    ],
+    "obj_precision": [
+      0.0094,
+      0.0274
+    ],
+    "obj_recall": [
+      -0.0152,
+      -0.0027
+    ]
+  },
+  "free_classifier_oof_gain": 0.0
+}
