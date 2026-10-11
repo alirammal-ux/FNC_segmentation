@@ -66,37 +66,73 @@ runs/             saved results read by the notebooks: cresunet_light/ (adopted 
 other_methods/    the methods we compare with (threshold baselines, Cellpose) and how they were obtained
 kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them;
                   executed/: the same notebooks as they ran, with their outputs
-data/             not included (see below)
+data/             not included (see How to run)
 requirements.txt  versions of the local environment
 ```
 
-## Data
+## How to run
 
-Download the Green collection (Clissa et al., 2024, AMS Acta, University of Bologna):
+### Setup
+
+Clone the repository, create a Python 3.12 environment and install the dependencies (`requirements.txt` lists the versions
+of the local environment):
+
+```bash
+git clone https://github.com/alirammal-ux/FNC_segmentation.git
+cd FNC_segmentation
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Everything runs from the repository root, so that `models`, `train`, `evaluation`, `experiments` and `other_methods` are
+importable.
+
+### Data
+
+Download the Green collection (Clissa et al., 2024, AMS Acta, University of Bologna) into `data/`:
 
 ```bash
 wget -c https://amsacta.unibo.it/7347/28/green.zip
 unzip green.zip -d data/
 ```
 
-The cleaned masks (`data/cleaned_masks/{trainval,test}/Green/masks`) are created by `notebooks/01_eda_green.ipynb`.
+Then run `notebooks/01_eda_green.ipynb`: it creates the cleaned masks (`data/cleaned_masks/{trainval,test}/Green/masks`)
+used by everything else.
 
-## Environment
+### Training (optional: the trained network is saved in `runs/cresunet_light/`)
 
-Python 3.12 with the packages in `requirements.txt` (PyTorch 2.14, NumPy 2.4, SciPy 1.17, scikit-image 0.26,
-scikit-learn 1.9, pandas 3.0, matplotlib 3.10, joblib 1.6).
-The notebooks run on CPU; training needs a GPU and was run on Kaggle (T4): see `kaggle/README.md`.
-Run everything from the repository root, so that `models`, `train`, `evaluation`, `experiments` and `other_methods` are importable.
+The network was trained on a Kaggle T4 GPU (~1 h) with `kaggle/train.ipynb` (see `kaggle/README.md`), which runs:
 
-## How to run
+```bash
+python -m train.training \
+  --images_dir data/green/trainval/images \
+  --masks_dir data/cleaned_masks/trainval/Green/masks \
+  --split_json splits/green_split.json \
+  --out_dir runs/cresunet_light \
+  --small_rf --epochs 100 --patience 100
+```
 
-From the repository root, after downloading the data:
+`--small_rf` builds c-ResUNet-light; `--patience 100` disables early stopping. Output: `best.pt`, `last.pt`, `log.csv`,
+`config.json`.
 
-1. `notebooks/01_eda_green.ipynb` → cleaned masks (needed by everything else);
-2. `notebooks/02` → `04` in order (CPU; 04 takes about 10 minutes). They load the saved checkpoints and classifiers in
-   `runs/`.
+### Object classifier (optional: saved in `runs/cresunet_light/object_classifier/`)
 
-To retrain instead of loading: the network with `kaggle/train.ipynb` (GPU, ~1 h); then the probability maps of the training
-images (`python -m evaluation.predict --ckpt runs/cresunet_light/best.pt --subset train --out runs/cresunet_light/pred_train.npz ...`)
-and, in the same way, of the validation images (`pred_val.npz`); finally the object classifier
-(`python -m evaluation.watershed_classifier`).
+Probability maps of the training and validation images, then the selection and the fit of the classifier:
+
+```bash
+for s in train val; do
+  python -m evaluation.predict --ckpt runs/cresunet_light/best.pt --subset $s \
+    --images_dir data/green/trainval/images \
+    --masks_dir data/cleaned_masks/trainval/Green/masks \
+    --split_json splits/green_split.json \
+    --out runs/cresunet_light/pred_$s.npz
+done
+python -m evaluation.watershed_classifier
+```
+
+### Notebooks and test (CPU)
+
+Run `notebooks/02_data_and_training.ipynb`, `03_post_processing.ipynb` and `04_test.ipynb` in order: they load the
+checkpoints and classifiers saved in `runs/`. `04_test.ipynb` evaluates the pipeline on the 70 test images (about 10
+minutes).
