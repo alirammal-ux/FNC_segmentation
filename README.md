@@ -74,14 +74,14 @@ requirements.txt  versions of the local environment
 
 ### Setup
 
-Clone the repository, create a Python 3.12 environment and install the dependencies (`requirements.txt` lists the versions
-of the local environment):
+Clone the repository, create a conda environment with Python 3.12 and install the dependencies (`requirements.txt` lists
+the versions of the local environment):
 
 ```bash
 git clone https://github.com/alirammal-ux/FNC_segmentation.git
 cd FNC_segmentation
-python -m venv venv
-source venv/bin/activate
+conda create -n fnc python=3.12
+conda activate fnc
 pip install -r requirements.txt
 ```
 
