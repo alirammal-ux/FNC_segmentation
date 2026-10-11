@@ -54,8 +54,8 @@ evaluation/       prediction, post-processing, object features and classifier, m
 experiments/      the experiments that were tried: notebook (experiments.ipynb), index of the results, TTA code
 splits/           train/val split and the 5 cross-validation folds
 runs/             saved results read by the notebooks: cresunet_light/ (adopted network and classifiers), cresunet/
-                  (c-ResUNet, Morelli et al.), cresunet_light_cv*/ and cv_compare/ (cross-validation), cresunet_light_<variant>/
-                  (training variants)
+                  (c-ResUNet, Morelli et al.), cresunet_light_cv*/, cresunet_light_wm_cv*/ and cv_compare/ (cross-validation),
+                  cresunet_light_<variant>/ (training variants)
 other_methods/    the methods we compare with (threshold baselines, Cellpose) and how they were obtained
 kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them;
                   executed/: the same notebooks as they ran, with their outputs

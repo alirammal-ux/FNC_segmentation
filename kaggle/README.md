@@ -32,9 +32,10 @@ Both are uploaded as zip files (Kaggle extracts them). The notebooks locate the 
 | `recipe_variants.ipynb` | five trainings of the adopted network, each with one change to the training recipe, and test-time augmentation (see below) | `cresunet_light_<variant>/`, `cresunet_light_tta/` | ~6 h |
 | `../other_methods/cellpose/kaggle_cellpose.ipynb` | Cellpose: zero-shot, fine-tuning on the training images, predictions of the fine-tuned model (Internet on) | `runs/cellpose/` (the files kept are in `other_methods/cellpose/`) | ~8 h |
 
-This repository keeps only what the notebooks read: in `runs/`, the checkpoints and classifiers of the two networks and,
-for the cross-validation and the recipe variants, `config.json` and `log.csv`. The probability maps (`pred_*.npz`, ~70 MB
-per run, ~400 MB for the test-time augmentation) are not included.
+This repository keeps only what the notebooks read: in `runs/`, the checkpoint (`best.pt`), `config.json` and `log.csv` of
+the adopted network, of the c-ResUNet and of the recipe variants, the object classifiers of the adopted network and, for
+the cross-validation, `config.json` and `log.csv`. The probability maps (`pred_*.npz`, ~70 MB per run, ~400 MB for the
+test-time augmentation) are not included.
 
 The notebooks as they ran, with their outputs, are in `executed/`.
 
