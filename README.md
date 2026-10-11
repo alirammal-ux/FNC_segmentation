@@ -138,3 +138,9 @@ python -m evaluation.watershed_classifier
 Run `notebooks/02_data_and_training.ipynb`, `03_post_processing.ipynb` and `04_test.ipynb` in order: they load the
 checkpoints and classifiers saved in `runs/`. `04_test.ipynb` evaluates the pipeline on the 70 test images (about 10
 minutes).
+
+## License
+
+The code is released under the MIT License (`LICENSE`). The data are not included: the Fluorescent Neuronal Cells v2
+dataset is distributed by its authors under CC BY 4.0 (https://doi.org/10.6092/unibo/amsacta/7347); please cite
+Clissa et al. (2024).
