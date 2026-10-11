@@ -39,7 +39,9 @@ bootstrap interval over the images (notebook 04).
 | robust threshold (median + 6.5 MAD) | 0.506 | 0.441 | 0.595 | 0.579 | 9.8 |
 
 The adopted pipeline is at the level of Cellpose-SAM fine-tuned (no demonstrable difference in F1), with ~600× fewer
-parameters and runs on a CPU. Most remaining errors are faint cells whose annotation is itself ambiguous (notebooks 03 and 04).
+parameters and runs on a CPU. Most remaining errors are yes/no
+decisions on faint cells, the borderline cases that the annotation protocol of the dataset describes as subjective
+(notebooks 03 and 04).
 
 ## Notebooks
 
