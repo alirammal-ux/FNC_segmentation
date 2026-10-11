@@ -19,6 +19,13 @@ convolution) and that block, which enlarges the field of view; the two were eval
 (Yellow). c-ResUNet-light keeps the first addition and drops the second: on Green the block brings no measurable gain, for
 2.6× the parameters (notebook 02).
 
+<p align="center"><img src="models/c_resunet_light.png" width="620" alt="Architecture of c-ResUNet-light"></p>
+
+*c-ResUNet-light, drawn as Fig. 2 of Morelli et al. (2021): each box is a layer; the 1 × 1 convolutions on the solid
+arrows are the shortcuts of the residual blocks. The network returns one logit per pixel; the sigmoid that turns it into
+the probability of cell is applied outside the network (in the loss during training, in `evaluation/predict.py` at
+inference).*
+
 ## Results on the test set
 
 70 images never used for training or for any choice, 1172 annotated cells; object F1 with matching at IoU > 0.5, 95%
@@ -48,7 +55,7 @@ parameters and runs on a CPU. Most remaining errors are faint cells whose annota
 ```
 notebooks/        the four notebooks above
 models/           c-ResUNet (c_res_unet.py), its logit-output version used for training, and c-ResUNet-light
-                  (c_res_unet_small_rf.py: no 5×5 residual block in the bottleneck)
+                  (c_res_unet_small_rf.py: no 5×5 residual block in the bottleneck; diagram: c_resunet_light.png)
 train/            dataset, loss, training script, train/val split and 5-fold split
 evaluation/       prediction, post-processing, object features and classifier, metrics
 experiments/      the experiments that were tried: notebook (experiments.ipynb), index of the results, TTA code
