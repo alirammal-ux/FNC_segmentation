@@ -55,21 +55,30 @@ decisions on faint cells, the borderline cases that the annotation protocol of t
 ## Structure
 
 ```
-notebooks/        the four notebooks above
-models/           c-ResUNet (c_res_unet.py), its logit-output version used for training, and c-ResUNet-light
-                  (c_res_unet_small_rf.py: no 5×5 residual block in the bottleneck; diagram: c_resunet_light.png)
-train/            dataset, loss, training script, train/val split and 5-fold split
-evaluation/       prediction, post-processing, object features and classifier, metrics
-experiments/      the experiments that were tried: notebook (experiments.ipynb), index of the results, TTA code
-splits/           train/val split and the 5 cross-validation folds
-runs/             saved results read by the notebooks: cresunet_light/ (adopted network and classifiers), cresunet/
-                  (c-ResUNet, Morelli et al.), cresunet_light_cv*/, cresunet_light_wm_cv*/ and cv_compare/ (cross-validation),
-                  cresunet_light_<variant>/ (training variants)
-other_methods/    the methods we compare with (threshold baselines, Cellpose) and how they were obtained
-kaggle/           notebooks run on a Kaggle GPU (training, cross-validation, recipe variants) and how to run them;
-                  executed/: the same notebooks as they ran, with their outputs
-data/             not included (see How to run)
-requirements.txt  versions of the local environment
+.
+├── notebooks/                      the four notebooks above
+├── models/
+│   ├── c_res_unet.py               c-ResUNet (Morelli et al., 2021)
+│   ├── c_res_unet_logits.py        the same network returning logits, used for training
+│   ├── c_res_unet_small_rf.py      c-ResUNet-light, the adopted network (no 5×5 block in the bottleneck)
+│   └── c_resunet_light.png         diagram of c-ResUNet-light
+├── train/                          dataset, loss, training script, train/val split and 5-fold split
+├── evaluation/                     prediction, post-processing, object features and classifier, metrics
+├── splits/                         train/val split and the 5 cross-validation folds
+├── runs/                           saved results read by the notebooks
+│   ├── cresunet_light/             adopted network and object classifiers
+│   ├── cresunet/                   c-ResUNet of Morelli et al.
+│   ├── cresunet_light_<variant>/   training variants
+│   ├── cresunet_light_cv*/         cross-validation, adopted recipe
+│   ├── cresunet_light_wm_cv*/      cross-validation, adopted recipe + weight maps
+│   └── cv_compare/                 comparison of the cross-validation runs
+├── experiments/                    the experiments tried (experiments.ipynb), index of the results, TTA code
+├── other_methods/                  compared methods (threshold baselines, Cellpose) and how they were obtained
+├── kaggle/                         GPU notebooks (training, cross-validation, recipe variants) and how to run them
+│   └── executed/                   the same notebooks as they ran, with their outputs
+├── data/                           not included (see How to run)
+├── requirements.txt                versions of the local environment
+└── LICENSE                         MIT
 ```
 
 ## How to run
