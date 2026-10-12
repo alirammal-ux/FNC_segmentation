@@ -21,7 +21,7 @@ convolution) and that block, which enlarges the field of view; the two were eval
 
 <p align="center"><img src="models/c_resunet_light.png" width="620" alt="Architecture of c-ResUNet-light"></p>
 
-*c-ResUNet-light, drawn as Fig. 2 of Morelli et al. (2021): each box is a layer; the 1 × 1 convolutions on the solid
+*c-ResUNet-light: each box is a layer; the 1 × 1 convolutions on the solid
 arrows are the shortcuts of the residual blocks. The network returns one logit per pixel; the sigmoid that turns it into
 the probability of cell is applied outside the network (in the loss during training, in `evaluation/predict.py` at
 inference).*
