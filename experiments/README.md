@@ -74,3 +74,14 @@ have no annotated pixel at all, against 15% in the image interior; they are not 
 2.11). The cause cannot be determined from these data. Removing all border objects: validation F1 [−0.001, +0.011]
 (precision up, recall down); letting the classifier judge them: no out-of-fold gain → border objects kept (notebook 03,
 section 6). Source: `runs/cresunet_light/border_check.json`.
+
+## Object classifier: training data
+
+The classifier was first trained on the objects that the adopted network predicts on its own training images: there 18%
+of the objects are not annotated, against 21% when the same images are predicted by the cross-validation networks that
+did not see them, and 23% on the validation images. Trained on these out-of-fold objects (same race), the classifier is
+again a logistic regression, with a higher threshold (0.51 instead of 0.34) and an out-of-fold F1 closer to the
+validation one (0.824 instead of 0.841). On the validation images the F1 is the same (0.815 and 0.815, difference
+[−0.011, +0.012]), with higher precision and lower recall. Adopted, because its training objects resemble those of new
+images (notebook 03, section 6); the cross-validation networks were trained on folds that include the validation
+images, but the classifier never sees their objects. Source: `runs/cresunet_light/oof_classifier_check.json`.

@@ -24,4 +24,5 @@ Cellpose cannot run on our CPU machine in reasonable time (~290 M parameters); i
   objects never judged), trained on the objects that the fine-tuned Cellpose predicts on the training images
   (`objects_train.csv`), with its threshold chosen for Cellpose by the same 5-fold cross-validation by image:
   keep if P(true) ≥ 0.33 (out-of-fold F1 0.8175; gradient boosting reaches the same, `classifier_results.json`).
-  Stored frozen in `cellpose_classifier.joblib` (+ `cellpose_classifier.json`).
+  Unlike the classifier of our pipeline, it is trained on images that the fine-tuned Cellpose has seen: there are no
+  out-of-fold predictions of Cellpose (they would need five fine-tunings). Stored frozen in `cellpose_classifier.joblib` (+ `cellpose_classifier.json`).

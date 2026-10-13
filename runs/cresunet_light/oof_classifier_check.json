@@ -1,0 +1,101 @@
+{
+  "training_objects": {
+    "in_sample (adopted network, images it was trained on)": {
+      "images": 166,
+      "objects": 2793,
+      "not_annotated": 502,
+      "not_annotated_share": 0.17973505191550304
+    },
+    "out_of_fold (cross-validation networks, images they did not see)": {
+      "images": 166,
+      "objects": 2870,
+      "not_annotated": 604,
+      "not_annotated_share": 0.21045296167247388
+    }
+  },
+  "validation_objects": {
+    "images": 40,
+    "objects": 811,
+    "not_annotated": 186,
+    "not_annotated_share": 0.22934648581997533
+  },
+  "classifiers": {
+    "in_sample": {
+      "model": "logistic",
+      "threshold": 0.34,
+      "oof_f1": 0.8407194511403672
+    },
+    "out_of_fold": {
+      "model": "logistic",
+      "threshold": 0.51,
+      "oof_f1": 0.8235294117647058
+    }
+  },
+  "race_out_of_fold": [
+    {
+      "model": "logistic",
+      "threshold": 0.51,
+      "obj_f1": 0.8235294117647058
+    },
+    {
+      "model": "boosting",
+      "threshold": 0.14,
+      "obj_f1": 0.8212648945921174
+    }
+  ],
+  "validation": {
+    "in_sample": {
+      "dice": 0.7614841461500179,
+      "iou": 0.6148360101995547,
+      "obj_f1": 0.8151093439363817,
+      "obj_precision": 0.7904884318766067,
+      "obj_recall": 0.841313269493844,
+      "n_merged": 9.0,
+      "count_mae": 4.395348837209302,
+      "count_bias": 1.0930232558139534
+    },
+    "out_of_fold": {
+      "dice": 0.7602515462656961,
+      "iou": 0.6132304855680257,
+      "obj_f1": 0.8151658767772512,
+      "obj_precision": 0.806970509383378,
+      "obj_recall": 0.8235294117647058,
+      "n_merged": 9.0,
+      "count_mae": 4.116279069767442,
+      "count_bias": 0.3488372093023256
+    }
+  },
+  "validation_dropped": {
+    "in_sample": {
+      "objects": 33,
+      "matching_annotated_cell": 10
+    },
+    "out_of_fold": {
+      "objects": 65,
+      "matching_annotated_cell": 23
+    }
+  },
+  "ci95_out_of_fold_minus_in_sample": {
+    "obj_f1": [
+      -0.010979826728870637,
+      0.011535076689495145
+    ],
+    "obj_precision": [
+      0.006041236964668723,
+      0.028585216385393835
+    ],
+    "obj_recall": [
+      -0.03082214734290647,
+      -0.004558240561028326
+    ],
+    "dice": [
+      -0.009051138254333114,
+      0.006941382513338227
+    ],
+    "count_mae": [
+      -0.6976744186046506,
+      0.13953488372093048
+    ]
+  },
+  "decision": "out-of-fold classifier adopted: same validation F1, trained on objects of images the network did not see"
+}

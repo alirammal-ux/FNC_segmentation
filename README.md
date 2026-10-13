@@ -9,7 +9,7 @@ Fluorescent Neuronal Cells v2 dataset (Clissa et al., 2024), with a light c-ResU
 image → c-ResUNet-light (runs/cresunet_light/best.pt, 0.50 M parameters) → probability map
       → threshold 0.5 → fill holes → remove objects < 300 px
       → watershed on the distance transform (seeds at least 20 px apart)
-      → object classifier (logistic regression on 10 object features, keep if P(true) ≥ 0.34; border objects always kept)
+      → object classifier (logistic regression on 10 object features, keep if P(true) ≥ 0.51; border objects always kept)
       → labelled cells and their count
 ```
 
@@ -33,7 +33,7 @@ bootstrap interval over the images (notebook 04).
 
 | method | object F1 | precision | recall | pixel Dice | count error (MAE) |
 |---|---|---|---|---|---|
-| **adopted pipeline** | **0.834** [0.810, 0.858] | 0.807 | 0.864 | 0.758 | 3.9 |
+| **adopted pipeline** | **0.836** [0.811, 0.859] | 0.826 | 0.846 | 0.758 | 3.5 |
 | Cellpose-SAM fine-tuned on the same images | 0.819 | 0.861 | 0.782 | 0.743 | 3.8 |
 | Cellpose-SAM zero-shot | 0.574 | 0.412 | 0.944 | 0.579 | 21.6 |
 | robust threshold (median + 6.5 MAD) | 0.506 | 0.441 | 0.595 | 0.579 | 9.8 |
@@ -129,16 +129,16 @@ python -m train.training \
 
 ### Object classifier (optional: saved in `runs/cresunet_light/object_classifier/`)
 
-Probability maps of the training and validation images, then the selection and the fit of the classifier:
+Trained on the out-of-fold predictions of the cross-validation (`kaggle/cross_validation.ipynb`, recipe `light`:
+`runs/cresunet_light_cv{k}/pred_val.npz`, each training image predicted by the network that did not see it) and checked
+on the validation images predicted by the adopted network:
 
 ```bash
-for s in train val; do
-  python -m evaluation.predict --ckpt runs/cresunet_light/best.pt --subset $s \
-    --images_dir data/green/trainval/images \
-    --masks_dir data/cleaned_masks/trainval/Green/masks \
-    --split_json splits/green_split.json \
-    --out runs/cresunet_light/pred_$s.npz
-done
+python -m evaluation.predict --ckpt runs/cresunet_light/best.pt --subset val \
+  --images_dir data/green/trainval/images \
+  --masks_dir data/cleaned_masks/trainval/Green/masks \
+  --split_json splits/green_split.json \
+  --out runs/cresunet_light/pred_val.npz
 python -m evaluation.watershed_classifier
 ```
 

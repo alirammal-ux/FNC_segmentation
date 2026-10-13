@@ -2,29 +2,29 @@
   "min_distance": 20,
   "min_area": 120,
   "model": "logistic",
-  "threshold_classifier": 0.36,
-  "oof_f1": 0.8343173431734318,
+  "threshold_classifier": 0.25,
+  "oof_f1": 0.8161108073628577,
   "race": [
     {
       "model": "logistic",
-      "threshold": 0.36,
-      "obj_f1": 0.8343173431734318
+      "threshold": 0.25,
+      "obj_f1": 0.8161108073628577
     },
     {
       "model": "boosting",
-      "threshold": 0.17,
-      "obj_f1": 0.8325077967345441
+      "threshold": 0.08,
+      "obj_f1": 0.8143994211287988
     }
   ],
-  "train_objects": 2915,
+  "train_objects": 2987,
   "val": {
-    "dice": 0.7608552046439807,
-    "iou": 0.6140163825046604,
-    "obj_f1": 0.8105610561056106,
-    "obj_precision": 0.7831632653061225,
-    "obj_recall": 0.8399452804377565,
+    "dice": 0.7613987516030211,
+    "iou": 0.6147246763947943,
+    "obj_f1": 0.8108108108108109,
+    "obj_precision": 0.7824427480916031,
+    "obj_recall": 0.841313269493844,
     "n_merged": 9,
-    "count_mae": 4.395348837209302,
-    "count_bias": 1.2325581395348837
+    "count_mae": 4.441860465116279,
+    "count_bias": 1.2790697674418605
   }
 }

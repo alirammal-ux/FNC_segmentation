@@ -1,9 +1,10 @@
 '''The adopted post-processing pipeline and its object classifier: probability map → threshold 0.5 → fill holes →
 objects < 300 px removed → watershed (seeds at least 20 px apart; pieces < 300 px removed) → object classifier.
-main() builds the object tables of the training and validation images, runs the classifier race on the training objects
-(logistic regression vs gradient boosting and the threshold; 5 folds by image; border objects never judged), fits the
-winner on the interior training objects, saves it (classifier.joblib) and evaluates the pipeline once on the validation
-images. delivered_labels() is the pipeline on one image, used as is by notebooks 03 and 04.'''
+main() builds the training objects from the out-of-fold predictions of the 5 cross-validation networks (each training
+image predicted by the network that did not see it), runs the classifier race on them (logistic regression vs gradient
+boosting and the threshold; 5 folds by image; border objects never judged), fits the winner on the interior training
+objects, saves it (classifier.joblib) and evaluates the pipeline once on the validation images predicted by the adopted
+network. delivered_labels() is the pipeline on one image, used as is by notebooks 03 and 04.'''
 
 import argparse
 import json
@@ -20,10 +21,11 @@ from evaluation.object_features import FEATURES, build_table, label_objects
 from evaluation.postprocess import label_instances, predict_labels
 from evaluation.select_object_classifier import CANDIDATES, select_classifier
 from evaluation.tune import counts_row, metrics_from_counts
+from train.dataset import load_split
 
 MIN_DISTANCE = 20     # minimum distance between watershed seeds (px): no single training cell cut in two (notebook 03)
 PRED_MIN_AREA = 300   # smallest predicted object kept, before and after the watershed (px; notebook 03)
-THRESHOLD = 0.34      # objects with P(true) below are dropped: winner of the race for the adopted network (notebook 03)
+THRESHOLD = 0.51      # objects with P(true) below are dropped: winner of the race on the out-of-fold objects (notebook 03)
 
 
 def delivered_labels(prob, img, gt_lab, i, model, threshold=THRESHOLD, min_area=PRED_MIN_AREA):
@@ -37,19 +39,37 @@ def delivered_labels(prob, img, gt_lab, i, model, threshold=THRESHOLD, min_area=
     return relabel_sequential(np.where(np.isin(lab, kept), lab, 0))[0], t.assign(keep=keep)   # halves of a split touch
 
 
+def oof_objects(cv_pattern, train_names, images_dir, masks_dir, min_area):
+    '''Objects of the training images, each image predicted by the cross-validation network that did not see it
+    (pred_val.npz of the 5 folds); "image" = position of the image in train_names.'''
+    position = {n: i for i, n in enumerate(train_names)}
+    parts = []
+    for k in range(5):
+        path = Path(cv_pattern.format(k=k))
+        names = [str(n) for n in np.load(path)["names"]]
+        t = build_table(path, images_dir, masks_dir, min_distance=MIN_DISTANCE, min_area=min_area)
+        t["name"] = [names[i] for i in t.image]
+        t = t[t.name.isin(position)].copy()          # each held-out fold also contains validation images
+        t["image"] = t.name.map(position)
+        parts.append(t.drop(columns="name"))
+    return pd.concat(parts, ignore_index=True).sort_values(["image", "obj"], ignore_index=True)
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Object classifier of the adopted pipeline: race on train, fit, one check on val")
-    parser.add_argument("--run", type=Path, default=Path("runs/cresunet_light"))   # needs pred_train.npz and pred_val.npz
+    parser = argparse.ArgumentParser(description="Object classifier of the adopted pipeline: race on out-of-fold training objects, fit, one check on val")
+    parser.add_argument("--run", type=Path, default=Path("runs/cresunet_light"))   # needs pred_val.npz of the adopted network
+    parser.add_argument("--cv", default="runs/cresunet_light_cv{k}/pred_val.npz")  # out-of-fold predictions of the 5 folds
     parser.add_argument("--min_area", type=int, default=PRED_MIN_AREA)           # smallest predicted object kept (px)
     args = parser.parse_args()
     images_dir, masks_dir = Path("data/green/trainval/images"), Path("data/cleaned_masks/trainval/Green/masks")
+    train_names, _ = load_split(Path("splits/green_split.json"))
     out = args.run / ("object_classifier" if args.min_area == PRED_MIN_AREA else f"object_classifier_area{args.min_area}")
     out.mkdir(exist_ok=True)
 
-    # 1) training objects after the watershed → race → winner fit on the interior objects, saved for the test
-    train = build_table(args.run / "pred_train.npz", images_dir, masks_dir, min_distance=MIN_DISTANCE, min_area=args.min_area)
+    # 1) out-of-fold training objects → race → winner fit on the interior objects, saved for the test
+    train = oof_objects(args.cv, train_names, images_dir, masks_dir, args.min_area)
     train.to_csv(out / "objects_train.csv", index=False)
-    n_gt = sum(int(label_instances(m > 0).max()) for m in np.load(args.run / "pred_train.npz")["masks"])
+    n_gt = sum(int(label_instances(io.imread(masks_dir / n) > 0).max()) for n in train_names)
     summary, winner = select_classifier(train, n_gt)
     print(f"train: {len(train)} objects | TP {int(train.label.sum())} | true cells {n_gt}")
     print("race (out-of-fold F1 on train):\n" + summary.round(4).to_string(index=False))
