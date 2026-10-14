@@ -35,7 +35,7 @@ Source: `runs/cresunet_light/postprocessing_ablations.json`.
 
 | variant | result | decision |
 |---|---|---|
-| **minimum area 300 px** instead of 120 | out-of-fold +0.007; validation F1 [−0.007, +0.017]; cross-validation [+0.001, +0.009], 5 folds of 5 | **adopted** (on the cross-validation) |
+| **minimum area 300 px** instead of 120 | out-of-fold +0.007; validation F1 [−0.007, +0.017]; cross-validation [+0.001, +0.009], 5 folds of 5 | **adopted** on the cross-validation (notebook 03, section 3) |
 | minimum area 160 / 200 px | out-of-fold +0.001 / +0.004 | below the required gain |
 | minimum area 250 / 350 / 400 px | out-of-fold +0.006 / +0.009 / +0.008; validation F1 [−0.000, +0.007] / [−0.001, +0.012] / [−0.012, +0.016] | not adopted |
 | no watershed; seeds 12 / 15 / 25 px apart | out-of-fold −0.007; +0.002 / +0.001 / −0.002 (12 px cuts 3 cells in two) | 20 px kept |
@@ -80,10 +80,10 @@ classifier judge them: no out-of-fold gain → border objects kept (notebook 03,
 ## Object classifier: training data
 
 The classifier was first trained on the objects that the adopted network predicts on its own training images: there 18%
-of the objects are not annotated, against 21% when the same images are predicted by the cross-validation networks that
-did not see them, and 23% on the validation images. Trained on these out-of-fold objects (same race), the classifier is
-again a logistic regression, with a higher threshold (0.51 instead of 0.34) and an out-of-fold F1 closer to the
-validation one (0.824 instead of 0.841). On the validation images the F1 is the same (0.815 and 0.815, difference
+of the objects do not match an annotated cell, against 21% when the same images are predicted by the cross-validation
+networks that did not see them, and 23% on the validation images. Trained on these out-of-fold objects (same race), the
+classifier is again a logistic regression, with a higher threshold (0.51 instead of 0.34) and an out-of-fold F1 closer
+to the validation one (0.824 instead of 0.841). On the validation images the F1 is the same (0.815 and 0.815, difference
 [−0.011, +0.012]), with higher precision and lower recall. Adopted, because its training objects resemble those of new
-images (notebook 03, section 6); the cross-validation networks were trained on folds that include the validation
-images, but the classifier never sees their objects. Source: `runs/cresunet_light/oof_classifier_check.json`.
+images (notebook 03, section 6); the cross-validation networks were trained on folds that include the validation images,
+but the classifier never sees their objects. Source: `runs/cresunet_light/oof_classifier_check.json`.
