@@ -2,60 +2,60 @@
   "bands": [
     {
       "distance of the centre from the border (px)": "0-10",
-      "objects": 102,
-      "no annotated pixel (%)": 92.2,
-      "contrast (median)": 2.15,
+      "objects": 105,
+      "no annotated pixel (%)": 93.3,
+      "contrast (median)": 2.16,
       "background vs interior": 0.87
     },
     {
       "distance of the centre from the border (px)": "10-20",
-      "objects": 78,
-      "no annotated pixel (%)": 48.7,
-      "contrast (median)": 2.15,
+      "objects": 81,
+      "no annotated pixel (%)": 49.4,
+      "contrast (median)": 2.05,
       "background vs interior": 0.88
     },
     {
       "distance of the centre from the border (px)": "20-30",
-      "objects": 62,
-      "no annotated pixel (%)": 22.6,
-      "contrast (median)": 2.26,
+      "objects": 67,
+      "no annotated pixel (%)": 26.9,
+      "contrast (median)": 2.07,
       "background vs interior": 0.88
     },
     {
       "distance of the centre from the border (px)": "30-50",
-      "objects": 136,
-      "no annotated pixel (%)": 24.3,
-      "contrast (median)": 1.91,
+      "objects": 142,
+      "no annotated pixel (%)": 26.1,
+      "contrast (median)": 1.9,
       "background vs interior": 0.89
     },
     {
       "distance of the centre from the border (px)": "50-100",
-      "objects": 353,
-      "no annotated pixel (%)": 26.1,
-      "contrast (median)": 1.95,
+      "objects": 371,
+      "no annotated pixel (%)": 27.8,
+      "contrast (median)": 1.93,
       "background vs interior": 0.91
     },
     {
       "distance of the centre from the border (px)": ">100",
-      "objects": 3027,
-      "no annotated pixel (%)": 15.5,
-      "contrast (median)": 2.11,
+      "objects": 3064,
+      "no annotated pixel (%)": 17.5,
+      "contrast (median)": 2.09,
       "background vs interior": 1.0
     }
   ],
   "remove_border_objects_val_ci95": {
     "obj_f1": [
       -0.0008,
-      0.0113
+      0.0115
     ],
     "obj_precision": [
-      0.0094,
-      0.0274
+      0.0103,
+      0.0295
     ],
     "obj_recall": [
       -0.0152,
       -0.0027
     ]
   },
-  "free_classifier_oof_gain": 0.0
+  "free_classifier_oof_gain": -0.0005
 }

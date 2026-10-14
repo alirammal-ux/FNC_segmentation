@@ -30,18 +30,19 @@ there only together (on the Yellow collection); the adopted network keeps the fi
 ## Post-processing
 
 Each variant changes one element of the pipeline, with the object classifier chosen again for it (out-of-fold F1 on the
-169 training images, 5 folds by image). Source: `runs/cresunet_light/postprocessing_ablations.json`.
+objects of the 169 training images predicted by the cross-validation networks that did not see them, 5 folds by image).
+Source: `runs/cresunet_light/postprocessing_ablations.json`.
 
 | variant | result | decision |
 |---|---|---|
-| **minimum area 300 px** instead of 120 | out-of-fold +0.006; validation F1 [+0.001, +0.008]; cross-validation [+0.001, +0.009] | **adopted** |
-| minimum area 160 / 200 / 250 px | out-of-fold +0.002 / +0.003 / +0.004 | below the required gain |
-| minimum area 350 / 400 px | out-of-fold +0.006; validation F1 [−0.005, +0.013] / [−0.009, +0.014] | not adopted |
-| no watershed; seeds 12 / 15 / 25 px apart | out-of-fold −0.002; +0.004 / +0.001 / −0.002 (12 and 15 px cut 3 and 1 cells in two) | 20 px kept |
+| **minimum area 300 px** instead of 120 | out-of-fold +0.007; validation F1 [−0.007, +0.017]; cross-validation [+0.001, +0.009], 5 folds of 5 | **adopted** (on the cross-validation) |
+| minimum area 160 / 200 px | out-of-fold +0.001 / +0.004 | below the required gain |
+| minimum area 250 / 350 / 400 px | out-of-fold +0.006 / +0.009 / +0.008; validation F1 [−0.000, +0.007] / [−0.001, +0.012] / [−0.012, +0.016] | not adopted |
+| no watershed; seeds 12 / 15 / 25 px apart | out-of-fold −0.007; +0.002 / +0.001 / −0.002 (12 px cuts 3 cells in two) | 20 px kept |
 | test-time augmentation (8 symmetries; `experiments/predict_tta.py`) | network alone, training images: F1 +0.0048 | below the required gain |
-| features from the annotation protocol | out-of-fold −0.00004 | not adopted |
-| candidates from the robust threshold (k = 5, 4, 3) or Cellpose zero-shot, with a second classifier | out-of-fold ≤ +0.0002 | not adopted |
-| morphological closing | pairs within 6 px on the training images: 1 same cell, 18 different cells, 4 with an unannotated object | not adopted |
+| features from the annotation protocol | out-of-fold +0.002 | below the required gain |
+| candidates from the robust threshold (k = 5, 4, 3) or Cellpose zero-shot, with a second classifier | out-of-fold ≤ +0.0003 | not adopted |
+| morphological closing | pairs within 6 px on the training images: 1 same cell, 13 different cells, 4 with an unannotated object | not adopted |
 
 ## Cross-validation
 
@@ -69,11 +70,12 @@ objects of the other folds. Two recipes: the adopted one (`runs/cresunet_light_c
 
 ## Objects at the image border
 
-Of the objects found by the network whose centre lies within 10 px of the image border (cut by about half or more), 92%
-have no annotated pixel at all, against 15% in the image interior; they are not fainter (median contrast 2.15, against
-2.11). The cause cannot be determined from these data. Removing all border objects: validation F1 [−0.001, +0.011]
-(precision up, recall down); letting the classifier judge them: no out-of-fold gain → border objects kept (notebook 03,
-section 6). Source: `runs/cresunet_light/border_check.json`.
+Of the objects found by networks that did not see the images (cross-validation networks for the training images) whose
+centre lies within 10 px of the image border (cut by about half or more), 93.3% have no annotated pixel at all, against
+17.5% in the image interior; they are not fainter (median contrast 2.16, against 2.09). The cause cannot be determined
+from these data. Removing all border objects: validation F1 [−0.001, +0.011] (precision up, recall down); letting the
+classifier judge them: no out-of-fold gain → border objects kept (notebook 03, section 6). Source:
+`runs/cresunet_light/border_check.json`.
 
 ## Object classifier: training data
 
