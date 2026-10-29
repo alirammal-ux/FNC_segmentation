@@ -54,7 +54,7 @@ decisions on faint cells, the borderline cases that the annotation protocol of t
 
 ## Slides
 
-The slides presenting the project (data, model, post-processing and results) are in the [`documents/`](documents/) folder:
+The slides presenting the project (data, model, post-processing and results) are in:
 [`documents/eng/Segmentation_c-FOS.pdf`](documents/eng/Segmentation_c-FOS.pdf).
 
 ## Structure
