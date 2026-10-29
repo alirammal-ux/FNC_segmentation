@@ -52,11 +52,17 @@ decisions on faint cells, the borderline cases that the annotation protocol of t
 | `03_post_processing.ipynb` | from probabilities to cells: threshold, minimum area, watershed, object classifier |
 | `04_test.ipynb` | evaluation on the test set and comparison with other methods |
 
+## Slides
+
+The slides presenting the project (data, model, post-processing and results) are in the [`documents/`](documents/) folder:
+[`documents/eng/Segmentation_c-FOS.pdf`](documents/eng/Segmentation_c-FOS.pdf).
+
 ## Structure
 
 ```
 .
 ├── notebooks/                      the four notebooks above
+├── documents/                      presentation slides of the project
 ├── models/
 │   ├── c_res_unet.py               c-ResUNet (Morelli et al., 2021)
 │   ├── c_res_unet_logits.py        the same network returning logits, used for training
